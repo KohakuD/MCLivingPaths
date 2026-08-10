@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.path.BiomePathProfiles;
 import ch.minenox.livingpaths.path.PathWearData;
 import ch.minenox.livingpaths.path.PathWearEvents;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -26,6 +27,8 @@ public final class LivingPathsDebugCommands {
                         .then(Commands.literal("debug")
                                 .then(Commands.literal("status")
                                         .executes(context -> showStatus(context.getSource().getPlayerOrException())))
+                                .then(Commands.literal("profile")
+                                        .executes(context -> showProfile(context.getSource().getPlayerOrException())))
                                 .then(Commands.literal("addwear")
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(1, 10_000))
                                                 .executes(context -> addWear(
@@ -52,6 +55,18 @@ public final class LivingPathsDebugCommands {
                 groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
         ));
         return wear;
+    }
+
+    private static int showProfile(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        var groundPos = player.getOnPos().immutable();
+        var profile = BiomePathProfiles.profileFor(level, groundPos);
+
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.profile",
+                groundPos.getX(), groundPos.getY(), groundPos.getZ(), profile.name()
+        ));
+        return profile.ordinal() + 1;
     }
 
     private static int addWear(ServerPlayer player, int amount) {
