@@ -1,14 +1,14 @@
 # Living Paths – Design
 
-## Grundidee
+## Core Idea
 
-Living Paths verändert die Landschaft abhängig davon, wie häufig bestimmte Blöcke von Spielern und später auch anderen Entitäten betreten werden.
+Living Paths changes the landscape based on how frequently certain blocks are walked over by players and, later, other entities.
 
-Wege sollen organisch entstehen und nicht überall identisch aussehen.
+Paths should emerge organically and should not look identical everywhere.
 
-## Grundregeln
+## Core Rules
 
-### Standard-Abnutzung
+### Standard Wear Progression
 
 Grass Block
 → Dirt Path
@@ -16,58 +16,58 @@ Grass Block
 → Gravel
 → Cobblestone
 
-Normale Dirt-Blöcke werden bewusst nicht als Abnutzungsstufe verwendet, da sie durch benachbarte Grass- oder Mycelium-Blöcke wieder überwachsen können.
+Regular Dirt is deliberately excluded as a wear stage because nearby Grass Blocks or Mycelium can spread back onto it.
 
-### Geschützte Blöcke
+### Protected Blocks
 
-Farmland wird niemals durch Living Paths verändert.
+Farmland must never be modified by Living Paths.
 
-### Podzol und Mycelium
+### Podzol and Mycelium
 
-Podzol und Mycelium können ebenfalls verschleissen, sind jedoch deutlich widerstandsfähiger als Grass Blocks.
+Podzol and Mycelium can also wear down, but they are significantly more resistant than Grass Blocks.
 
-Für die erste Version sollen beide ungefähr den dreifachen Nutzungsaufwand gegenüber Grass Blocks benötigen. Dieser Wert ist ausdrücklich ein Testwert und kann nach Spieltests angepasst werden.
+For the first version, both should require roughly three times as much traffic as Grass Blocks. This is explicitly a test value and may be adjusted after gameplay testing.
 
-### Biomabhängige Entwicklung
+### Biome-Dependent Development
 
-Spätere Versionen sollen unterschiedliche Wegcharaktere abhängig vom Biom erzeugen.
+Later versions should create different path characteristics depending on the biome.
 
-Beispiele:
+Examples:
 
-- Waldgebiete: Podzol und Rooted Dirt
-- feuchte oder stark bewachsene Gebiete: Moss und Mossy Cobblestone
-- offene Landschaft: Dirt Path, Coarse Dirt und Gravel
+- Forest areas: Podzol and Rooted Dirt
+- Damp or heavily vegetated areas: Moss and Mossy Cobblestone
+- Open landscapes: Dirt Path, Coarse Dirt and Gravel
 
-Biomabhängige Entwicklung soll nicht bedeuten, dass jeder Block dieselbe feste Kette durchläuft. Ziel ist eine natürliche Mischung aus stärker und schwächer beanspruchten Flächen.
+Biome-dependent development should not mean that every block follows the same fixed sequence. The goal is a natural mixture of more and less heavily worn surfaces.
 
-### Höchste Verschleissstufe
+### Highest Regular Wear Stage
 
-Cobblestone ist zunächst die höchste reguläre Abnutzungsstufe.
+Cobblestone is initially the highest regular wear stage.
 
-Stone wird nicht automatisch als nächste Stufe verwendet. Eine spätere seltene Weiterentwicklung extrem stark genutzter Wege kann separat geprüft werden.
+Stone will not automatically become the next stage. A rare later development for extremely heavily used paths may be evaluated separately.
 
-### Natürliches Erscheinungsbild
+### Natural Appearance
 
-Langfristig sollen Wege nicht aus einer gleichmässigen Blockreihe bestehen. Die tatsächliche Nutzung soll Wegmitte, Randbereiche und unterschiedliche Verschleissgrade erzeugen.
+In the long term, paths should not consist of uniform rows of identical blocks. Actual traffic should create a stronger central track, softer edges and different levels of wear.
 
-Moos soll eher in wenig betretenen Randbereichen vorkommen als in der stark genutzten Wegmitte.
+Moss should be more likely to appear on lightly travelled edges than in the heavily used centre of a path.
 
-## Technische Grundprinzipien
+## Technical Principles
 
-- Die Verarbeitung erfolgt serverseitig.
-- Ein Spieler erzeugt nicht bei jedem Game-Tick Nutzung, sondern nur beim tatsächlichen Wechsel auf einen neuen Bodenblock.
-- Die Nutzung wird pro Blockposition gezählt.
-- Verschleissdaten sollen persistent gespeichert werden.
-- Farmland wird über eine geschützte Blockregel vollständig ausgeschlossen.
-- Die Architektur soll spätere Unterstützung für Vanilla-Mobs und MineColonies Citizens ermöglichen.
+- Processing happens server-side.
+- A player does not generate wear every game tick; wear is counted only when they actually move onto a new ground block.
+- Usage is tracked per block position.
+- Wear data must be stored persistently.
+- Farmland is completely excluded through a protected-block rule.
+- The architecture should allow later support for vanilla mobs and MineColonies Citizens.
 
-## Erste Testschwellen für 0.1.0
+## Initial Test Thresholds for 0.1.0
 
-Die folgenden Werte dienen nur als Ausgangspunkt für Spieltests:
+The following values are only a starting point for gameplay testing:
 
-- Grass Block: 25 Übertritte → Dirt Path
-- Dirt Path: weitere 50 Übertritte → Coarse Dirt
-- Coarse Dirt: weitere 100 Übertritte → Gravel
-- Gravel: weitere 200 Übertritte → Cobblestone
+- Grass Block: 25 crossings → Dirt Path
+- Dirt Path: 50 additional crossings → Coarse Dirt
+- Coarse Dirt: 100 additional crossings → Gravel
+- Gravel: 200 additional crossings → Cobblestone
 
-Podzol und Mycelium sollen in 0.1.0 ungefähr Faktor 3 gegenüber Grass Blocks verwenden.
+Podzol and Mycelium should use approximately a 3× resistance factor compared with Grass Blocks in 0.1.0.
