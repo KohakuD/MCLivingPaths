@@ -79,7 +79,7 @@ public final class PathWearEvents {
             return 0;
         }
 
-        int visits = data.addWear(pos, amount);
+        int visits = data.addWear(pos, amount, level.getGameTime());
         if (visits < threshold) {
             return visits;
         }
@@ -96,7 +96,7 @@ public final class PathWearEvents {
     }
 
     public static int getWear(ServerLevel level, BlockPos pos) {
-        return PathWearData.get(level).getWear(pos);
+        return PathWearData.get(level).getWear(pos, level.getGameTime());
     }
 
     public static int getThreshold(ServerLevel level, BlockPos pos) {
