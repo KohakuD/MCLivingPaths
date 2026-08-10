@@ -18,17 +18,22 @@
 - [x] Podzol und Mycelium deutlich langsamer verschleissen lassen
 - [x] Farmland vollständig von Veränderungen ausschliessen
 - [x] Verschleissdaten persistent speichern
-- [ ] Multiplayer-taugliche serverseitige Verarbeitung sicherstellen
-- [ ] Performance bei normalem Spielen prüfen
-- [ ] Erste Testschwellen im Spiel prüfen und bei Bedarf anpassen
+- [x] Alte Verschleissdaten abbauen und entfernen, damit Weltspeicher nicht unbegrenzt wachsen
+- [x] Multiplayer-taugliche serverseitige Verarbeitung implementieren
+- [x] Performance bei normalem Spielen prüfen
+- [x] Erste Testschwellen im Spiel prüfen und als erste Standardwerte beibehalten
 
-### Erste Testschwellen
+### Erste Standard-Schwellen
 
 - 25 Übertritte: Grass Block → Dirt Path
 - weitere 50 Übertritte: Dirt Path → Coarse Dirt
 - weitere 100 Übertritte: Coarse Dirt → Gravel
 - weitere 200 Übertritte: Gravel → Cobblestone
-- Podzol/Mycelium: zunächst ungefähr Faktor 3 gegenüber Grass Blocks
+- Podzol/Mycelium: ungefähr Faktor 3 gegenüber Grass Blocks
+
+### Hinweis zur Validierung
+
+Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhängig zum selben Verschleisswert eines Weges beitragen können. Ein echter Zwei-Spieler-Test ist bei Gelegenheit weiterhin sinnvoll, wird für 0.1.0 aber nicht als Blocker betrachtet.
 
 ## Geplante Weiterentwicklung
 
