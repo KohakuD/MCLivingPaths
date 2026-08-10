@@ -35,35 +35,62 @@
 
 The server-side implementation is designed so multiple players can contribute to the same path wear data independently. A real two-player validation test is still desirable when possible, but it is not considered a blocker for 0.1.0.
 
-## Planned Development
+## 0.2.0 – Biome Paths
 
-### Biome-Dependent Paths
+- [ ] Introduce biome path profiles without coupling them to the wear storage engine
+- [ ] Add data-driven forest-biome detection using biome tags
+- [ ] Integrate Rooted Dirt into forest-path progression
+- [ ] Integrate Podzol more strongly into forest variants
+- [ ] Add damp/vegetated biome profile
+- [ ] Integrate Moss and Mossy Cobblestone into suitable damp paths
+- [ ] Keep open-landscape paths close to the 0.1.0 progression
+- [ ] Avoid forcing every block in a biome through exactly the same sequence
+- [ ] Keep Farmland protected in every biome profile
+- [ ] Validate biome transitions in-game
 
-- Rooted Dirt in suitable forest biomes
-- Integrate Podzol more strongly into forest variants
-- Moss and Mossy Cobblestone in damp or heavily vegetated areas
-- Different path characteristics depending on biome
-- More natural, non-fully-linear transitions
+## 0.3.0 – Organic Paths
 
-### Organic Path Structure
+- [ ] Treat path centres and edges differently
+- [ ] Let heavily travelled tracks wear down more strongly
+- [ ] Allow Moss to develop more often along lightly travelled edges
+- [ ] Create natural-looking path widths instead of single uniform block lines
+- [ ] Introduce controlled variation so neighbouring path blocks do not always match
+- [ ] Keep path generation deterministic enough to avoid visual flicker or repeated rerolls
 
-- Treat path centres and edges differently
-- Let heavily travelled tracks wear down more strongly
-- Allow Moss to develop more often along lightly travelled edges
-- Create natural-looking path widths instead of single uniform block lines
+## 0.4.0 – Entity Traffic
 
-### Additional Entities
+- [ ] Allow selected vanilla mobs and animals to contribute to wear
+- [ ] Track entity movement efficiently without scanning every entity globally
+- [ ] Evaluate different wear weights by entity type and size
+- [ ] Keep vehicles/passengers from accidentally double-counting traffic
+- [ ] Validate performance with many nearby entities
 
-- Vanilla mobs and animals
-- MineColonies Citizens
-- Evaluate different weighting depending on entity type
+## 0.5.0 – MineColonies Integration
 
-### Configuration and Long-Term Behaviour
+- [ ] Detect MineColonies Citizens when MineColonies is installed
+- [ ] Let Citizens contribute naturally to Living Paths wear
+- [ ] Keep MineColonies an optional integration rather than a hard dependency
+- [ ] Evaluate role- or traffic-based weighting only if it improves natural path formation
+- [ ] Validate common colony routes such as Builder, Warehouse, Residence, Mine and Farm traffic
 
-- Make wear speed configurable
-- Make protected blocks configurable
-- Evaluate regeneration or overgrowth of rarely used paths
-- Evaluate rare further development of extremely heavily used Cobblestone paths
+## 0.6.0 – Configuration & Long-Term Behaviour
+
+- [ ] Make wear thresholds configurable
+- [ ] Make wear decay configurable
+- [ ] Make protected blocks configurable while keeping Farmland protected by default
+- [ ] Make entity traffic configurable
+- [ ] Evaluate regeneration or overgrowth of rarely used established paths
+- [ ] Evaluate rare further development of extremely heavily used Cobblestone paths
+- [ ] Provide sensible defaults so no configuration is required for normal use
+
+## Towards 1.0.0
+
+- [ ] Long-term survival-world test
+- [ ] Real multiplayer validation when possible
+- [ ] Compatibility pass with the intended modpack
+- [ ] Final performance and save-size review
+- [ ] Final English and German localisation review
+- [ ] Publication-ready documentation and packaging
 
 ## Guiding Principle
 
