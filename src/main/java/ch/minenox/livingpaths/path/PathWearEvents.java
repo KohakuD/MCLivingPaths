@@ -37,10 +37,6 @@ public final class PathWearEvents {
      */
     private static final int EDGE_WEAR_STEP_INTERVAL = 4;
 
-    /**
-     * Runtime-only movement state. Wear itself is stored persistently in {@link PathWearData}.
-     * Each player is tracked independently so multiple players can contribute to the same path.
-     */
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
     private static final Map<UUID, Integer> EDGE_STEP_COUNTER = new HashMap<>();
 
@@ -66,7 +62,7 @@ public final class PathWearEvents {
             return;
         }
 
-        addWear(level, groundPos, 1);
+        addWear(level, groundPos, 1, false);
         addOrganicEdgeWear(level, player.getUUID(), previousStep, currentStep);
     }
 
@@ -91,7 +87,6 @@ public final class PathWearEvents {
         int dz = currentStep.pos().getZ() - previousStep.pos().getZ();
         int dy = currentStep.pos().getY() - previousStep.pos().getY();
 
-        // Ignore teleports and other large position changes. Normal walking changes X/Z by at most one block.
         if ((dx == 0 && dz == 0)
                 || Math.abs(dx) > 1
                 || Math.abs(dz) > 1
@@ -104,7 +99,6 @@ public final class PathWearEvents {
             return;
         }
 
-        // A perpendicular vector points to the path shoulder. Alternate sides to avoid a permanent bias.
         int sideX = -Integer.signum(dz);
         int sideZ = Integer.signum(dx);
         if (((stepCount / EDGE_WEAR_STEP_INTERVAL) & 1) == 0) {
@@ -113,10 +107,18 @@ public final class PathWearEvents {
         }
 
         BlockPos edgePos = currentStep.pos().offset(sideX, 0, sideZ);
-        addWear(level, edgePos, 1);
+        addWear(level, edgePos, 1, true);
     }
 
     public static int addWear(ServerLevel level, BlockPos pos, int amount) {
+        return addWear(level, pos, amount, false);
+    }
+
+    public static int addEdgeWear(ServerLevel level, BlockPos pos, int amount) {
+        return addWear(level, pos, amount, true);
+    }
+
+    private static int addWear(ServerLevel level, BlockPos pos, int amount, boolean edgeWear) {
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
         PathWearData data = PathWearData.get(level);
@@ -132,12 +134,14 @@ public final class PathWearEvents {
             return 0;
         }
 
-        int visits = data.addWear(pos, amount, level.getGameTime());
+        int visits = data.addWear(pos, amount, level.getGameTime(), edgeWear);
         if (visits < threshold) {
             return visits;
         }
 
-        Block nextBlock = nextBlockFor(level, pos, block);
+        int edgeVisits = data.getEdgeWear(pos, level.getGameTime());
+        boolean edgeDominated = edgeVisits * 2 >= visits;
+        Block nextBlock = nextBlockFor(level, pos, block, edgeDominated);
         if (nextBlock == null) {
             data.clearWear(pos);
             return 0;
@@ -150,6 +154,10 @@ public final class PathWearEvents {
 
     public static int getWear(ServerLevel level, BlockPos pos) {
         return PathWearData.get(level).getWear(pos, level.getGameTime());
+    }
+
+    public static int getEdgeWear(ServerLevel level, BlockPos pos) {
+        return PathWearData.get(level).getEdgeWear(pos, level.getGameTime());
     }
 
     public static int getThreshold(ServerLevel level, BlockPos pos) {
@@ -190,7 +198,7 @@ public final class PathWearEvents {
         return -1;
     }
 
-    private static Block nextBlockFor(ServerLevel level, BlockPos pos, Block block) {
+    private static Block nextBlockFor(ServerLevel level, BlockPos pos, Block block, boolean edgeDominated) {
         BiomePathProfiles.PathProfile profile = BiomePathProfiles.profileFor(level, pos);
 
         if (block == Blocks.GRASS_BLOCK) {
@@ -204,7 +212,7 @@ public final class PathWearEvents {
         }
         if (block == Blocks.PACKED_MUD) {
             if (profile == BiomePathProfiles.PathProfile.DAMP) {
-                return BiomePathProfiles.usesDampMossVariation(level, pos)
+                return edgeDominated || BiomePathProfiles.usesDampMossVariation(level, pos)
                         ? Blocks.MOSS_BLOCK
                         : Blocks.ROOTED_DIRT;
             }
@@ -215,7 +223,7 @@ public final class PathWearEvents {
         }
         if (block == Blocks.DIRT_PATH) {
             if (profile == BiomePathProfiles.PathProfile.DAMP) {
-                return BiomePathProfiles.usesDampMossVariation(level, pos)
+                return edgeDominated || BiomePathProfiles.usesDampMossVariation(level, pos)
                         ? Blocks.MOSS_BLOCK
                         : Blocks.ROOTED_DIRT;
             }
@@ -235,7 +243,7 @@ public final class PathWearEvents {
         }
         if (block == Blocks.GRAVEL) {
             if (profile == BiomePathProfiles.PathProfile.DAMP
-                    && BiomePathProfiles.usesDampMossyCobblestoneVariation(level, pos)) {
+                    && (edgeDominated || BiomePathProfiles.usesDampMossyCobblestoneVariation(level, pos))) {
                 return Blocks.MOSSY_COBBLESTONE;
             }
             return Blocks.COBBLESTONE;
