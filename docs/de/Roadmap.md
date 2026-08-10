@@ -35,35 +35,62 @@
 
 Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhängig zum selben Verschleisswert eines Weges beitragen können. Ein echter Zwei-Spieler-Test ist bei Gelegenheit weiterhin sinnvoll, wird für 0.1.0 aber nicht als Blocker betrachtet.
 
-## Geplante Weiterentwicklung
+## 0.2.0 – Biome Paths
 
-### Biomabhängige Wege
+- [ ] Biom-Wegprofile einführen, ohne sie mit der Verschleiss-Speicherlogik zu vermischen
+- [ ] Wald-Biome datengetrieben über Biome-Tags erkennen
+- [ ] Rooted Dirt in die Waldweg-Entwicklung integrieren
+- [ ] Podzol stärker in Waldvarianten integrieren
+- [ ] Profil für feuchte/stark bewachsene Biome ergänzen
+- [ ] Moss und Mossy Cobblestone in geeignete feuchte Wege integrieren
+- [ ] Offene Landschaft nahe an der 0.1.0-Grundkette halten
+- [ ] Nicht jeden Block eines Bioms zwingend durch exakt dieselbe Kette schicken
+- [ ] Farmland in allen Biomprofilen geschützt lassen
+- [ ] Biomübergänge im Spiel testen
 
-- Rooted Dirt in geeigneten Wald-Biomen
-- Podzol stärker in Waldvarianten integrieren
-- Moss und Mossy Cobblestone in feuchten oder bewachsenen Gebieten
-- unterschiedliche Wegcharaktere je nach Biom
-- natürlichere, nicht vollständig lineare Übergänge
+## 0.3.0 – Organic Paths
 
-### Organische Wegstruktur
+- [ ] Wegmitte und Randbereiche unterschiedlich behandeln
+- [ ] Stark genutzte Laufspuren stärker verschleissen lassen
+- [ ] Moos eher an wenig genutzten Rändern entstehen lassen
+- [ ] Natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien erzeugen
+- [ ] Kontrollierte Variation einführen, damit benachbarte Wegblöcke nicht immer identisch sind
+- [ ] Wegentwicklung ausreichend deterministisch halten, damit keine sichtbaren Neuwürfe entstehen
 
-- Wegmitte und Randbereiche unterschiedlich behandeln
-- stark genutzte Laufspuren stärker verschleissen lassen
-- Moos eher an wenig genutzten Rändern entstehen lassen
-- natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien
+## 0.4.0 – Entity Traffic
 
-### Weitere Entitäten
+- [ ] Ausgewählte Vanilla-Mobs und Tiere zum Verschleiss beitragen lassen
+- [ ] Entitätsbewegung effizient erfassen, ohne global alle Entitäten zu scannen
+- [ ] Unterschiedliche Gewichtung nach Entitätstyp und Grösse prüfen
+- [ ] Fahrzeuge/Passagiere nicht versehentlich doppelt zählen
+- [ ] Performance mit vielen Entitäten in der Nähe prüfen
 
-- Vanilla-Mobs und Tiere
-- MineColonies Citizens
-- unterschiedliche Gewichtung je Entitätstyp prüfen
+## 0.5.0 – MineColonies Integration
 
-### Konfiguration und Langzeitverhalten
+- [ ] MineColonies Citizens erkennen, wenn MineColonies installiert ist
+- [ ] Citizens natürlich zum Living-Paths-Verschleiss beitragen lassen
+- [ ] MineColonies als optionale Integration statt harte Abhängigkeit umsetzen
+- [ ] Rollen-/Verkehrsgewichtung nur einführen, wenn sie natürlichere Wege erzeugt
+- [ ] Typische Kolonie-Routen wie Builder, Warehouse, Residence, Mine und Farm testen
 
-- Verschleissgeschwindigkeit konfigurierbar machen
-- geschützte Blöcke konfigurierbar machen
-- Regeneration bzw. Überwachsen wenig genutzter Wege prüfen
-- seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
+## 0.6.0 – Configuration & Long-Term Behaviour
+
+- [ ] Verschleiss-Schwellen konfigurierbar machen
+- [ ] Wear-Decay konfigurierbar machen
+- [ ] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
+- [ ] Entitätsverkehr konfigurierbar machen
+- [ ] Regeneration bzw. Überwachsen wenig genutzter etablierter Wege prüfen
+- [ ] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
+- [ ] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
+
+## Richtung 1.0.0
+
+- [ ] Langzeit-Test in einer Survival-Welt
+- [ ] Echter Multiplayer-Test, sobald möglich
+- [ ] Kompatibilitätsdurchgang mit dem geplanten Modpack
+- [ ] Finaler Performance- und Speichergrössen-Check
+- [ ] Finale Prüfung der englischen und deutschen Lokalisierung
+- [ ] Veröffentlichungsfertige Dokumentation und Paketierung
 
 ## Grundsatz
 
