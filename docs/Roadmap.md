@@ -37,16 +37,25 @@ The server-side implementation is designed so multiple players can contribute to
 
 ## 0.2.0 – Biome Paths
 
-- [ ] Introduce biome path profiles without coupling them to the wear storage engine
-- [ ] Add data-driven forest-biome detection using biome tags
-- [ ] Integrate Rooted Dirt into forest-path progression
-- [ ] Integrate Podzol more strongly into forest variants
-- [ ] Add damp/vegetated biome profile
-- [ ] Integrate Moss and Mossy Cobblestone into suitable damp paths
+- [x] Introduce biome path profiles without coupling them to the wear storage engine
+- [x] Add data-driven forest-biome detection using biome tags
+- [x] Integrate Rooted Dirt into forest-path progression
+- [x] Integrate Podzol more strongly into forest variants
+- [x] Add damp/vegetated biome profile
+- [x] Integrate Moss and Mossy Cobblestone into suitable damp paths
+- [x] Add Mud as a wearable starting block
+- [x] Add Packed Mud as a compacted intermediate stage before drier path materials
 - [ ] Keep open-landscape paths close to the 0.1.0 progression
-- [ ] Avoid forcing every block in a biome through exactly the same sequence
-- [ ] Keep Farmland protected in every biome profile
+- [x] Avoid forcing every block in a biome through exactly the same sequence
+- [x] Keep Farmland protected in every biome profile
 - [ ] Validate biome transitions in-game
+
+### Damp-path defaults
+
+- Mud: 50 crossings → Packed Mud
+- Packed Mud: 75 additional crossings → Moss Block or Rooted Dirt in damp biomes
+- Outside damp biomes, Packed Mud progresses to Coarse Dirt
+- Damp paths can later end in Cobblestone or Mossy Cobblestone depending on the stable block-position variation
 
 ## 0.3.0 – Organic Paths
 
