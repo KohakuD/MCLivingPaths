@@ -108,6 +108,22 @@ public final class PathWearData extends SavedData {
         }
     }
 
+    public void ageWearForDebug(BlockPos pos, int days) {
+        if (days <= 0) {
+            return;
+        }
+
+        long key = pos.asLong();
+        WearEntry entry = wearByPosition.get(key);
+        if (entry == null) {
+            return;
+        }
+
+        long agedLastUsed = entry.lastUsedGameTime() - days * TICKS_PER_MINECRAFT_DAY;
+        wearByPosition.put(key, new WearEntry(entry.visits(), agedLastUsed));
+        setDirty();
+    }
+
     private void maybeCleanup(long gameTime) {
         if (lastCleanupGameTime != Long.MIN_VALUE
                 && gameTime - lastCleanupGameTime < CLEANUP_INTERVAL_TICKS) {
