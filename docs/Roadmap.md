@@ -2,64 +2,64 @@
 
 ## 0.1.0 – Basic Path Wear
 
-- [ ] Spielerbewegung serverseitig erkennen
-- [ ] Betretene Bodenblöcke erfassen
-- [ ] Nutzung pro Blockposition zählen
-- [ ] Einen Block nur beim tatsächlichen Wechsel auf einen neuen Bodenblock zählen
-- [ ] Grass Block verschleissen lassen
-- [ ] Grundkette umsetzen:
+- [ ] Detect player movement server-side
+- [ ] Detect the ground blocks players walk on
+- [ ] Count usage per block position
+- [ ] Count a block only when the player actually moves onto a new ground block
+- [ ] Make Grass Blocks wear down
+- [ ] Implement the basic progression:
   - Grass Block
   - Dirt Path
   - Coarse Dirt
   - Gravel
   - Cobblestone
-- [ ] Podzol unterstützen
-- [ ] Mycelium unterstützen
-- [ ] Podzol und Mycelium deutlich langsamer verschleissen lassen
-- [ ] Farmland vollständig von Veränderungen ausschliessen
-- [ ] Verschleissdaten persistent speichern
-- [ ] Multiplayer-taugliche serverseitige Verarbeitung sicherstellen
-- [ ] Performance bei normalem Spielen prüfen
-- [ ] Erste Testschwellen im Spiel prüfen und bei Bedarf anpassen
+- [ ] Support Podzol
+- [ ] Support Mycelium
+- [ ] Make Podzol and Mycelium wear down significantly more slowly
+- [ ] Completely exclude Farmland from changes
+- [ ] Store wear data persistently
+- [ ] Ensure multiplayer-safe server-side processing
+- [ ] Check performance during normal gameplay
+- [ ] Test the initial thresholds in-game and adjust them if necessary
 
-### Erste Testschwellen
+### Initial Test Thresholds
 
-- 25 Übertritte: Grass Block → Dirt Path
-- weitere 50 Übertritte: Dirt Path → Coarse Dirt
-- weitere 100 Übertritte: Coarse Dirt → Gravel
-- weitere 200 Übertritte: Gravel → Cobblestone
-- Podzol/Mycelium: zunächst ungefähr Faktor 3 gegenüber Grass Blocks
+- 25 crossings: Grass Block → Dirt Path
+- 50 additional crossings: Dirt Path → Coarse Dirt
+- 100 additional crossings: Coarse Dirt → Gravel
+- 200 additional crossings: Gravel → Cobblestone
+- Podzol/Mycelium: initially approximately 3× the resistance of Grass Blocks
 
-## Geplante Weiterentwicklung
+## Planned Development
 
-### Biomabhängige Wege
+### Biome-Dependent Paths
 
-- Rooted Dirt in geeigneten Wald-Biomen
-- Podzol stärker in Waldvarianten integrieren
-- Moss und Mossy Cobblestone in feuchten oder bewachsenen Gebieten
-- unterschiedliche Wegcharaktere je nach Biom
-- natürlichere, nicht vollständig lineare Übergänge
+- Rooted Dirt in suitable forest biomes
+- Integrate Podzol more strongly into forest variants
+- Moss and Mossy Cobblestone in damp or heavily vegetated areas
+- Different path characteristics depending on biome
+- More natural, non-fully-linear transitions
 
-### Organische Wegstruktur
+### Organic Path Structure
 
-- Wegmitte und Randbereiche unterschiedlich behandeln
-- stark genutzte Laufspuren stärker verschleissen lassen
-- Moos eher an wenig genutzten Rändern entstehen lassen
-- natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien
+- Treat path centres and edges differently
+- Let heavily travelled tracks wear down more strongly
+- Allow Moss to develop more often along lightly travelled edges
+- Create natural-looking path widths instead of single uniform block lines
 
-### Weitere Entitäten
+### Additional Entities
 
-- Vanilla-Mobs und Tiere
+- Vanilla mobs and animals
 - MineColonies Citizens
-- unterschiedliche Gewichtung je Entitätstyp prüfen
+- Evaluate different weighting depending on entity type
 
-### Konfiguration und Langzeitverhalten
+### Configuration and Long-Term Behaviour
 
-- Verschleissgeschwindigkeit konfigurierbar machen
-- geschützte Blöcke konfigurierbar machen
-- Regeneration bzw. Überwachsen wenig genutzter Wege prüfen
-- seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
+- Make wear speed configurable
+- Make protected blocks configurable
+- Evaluate regeneration or overgrowth of rarely used paths
+- Evaluate rare further development of extremely heavily used Cobblestone paths
 
-## Grundsatz
+## Guiding Principle
 
-Living Paths soll Nutzung sichtbar machen, ohne wie ein automatischer Strassenbauer zu wirken. Die Landschaft soll sich aus tatsächlicher Bewegung entwickeln und dabei möglichst natürlich aussehen.
+Living Paths should make traffic visible without behaving like an automatic road builder. The landscape should evolve from actual movement and remain as natural-looking as possible.
