@@ -24,6 +24,7 @@ public final class PathWearEvents {
     private static final int PODZOL_THRESHOLD = 75;
     private static final int MYCELIUM_THRESHOLD = 75;
     private static final int DIRT_PATH_THRESHOLD = 50;
+    private static final int MOSS_THRESHOLD = 75;
     private static final int ROOTED_DIRT_THRESHOLD = 75;
     private static final int COARSE_DIRT_THRESHOLD = 100;
     private static final int GRAVEL_THRESHOLD = 200;
@@ -117,6 +118,9 @@ public final class PathWearEvents {
         if (block == Blocks.DIRT_PATH) {
             return DIRT_PATH_THRESHOLD;
         }
+        if (block == Blocks.MOSS_BLOCK) {
+            return MOSS_THRESHOLD;
+        }
         if (block == Blocks.ROOTED_DIRT) {
             return ROOTED_DIRT_THRESHOLD;
         }
@@ -130,6 +134,8 @@ public final class PathWearEvents {
     }
 
     private static Block nextBlockFor(ServerLevel level, BlockPos pos, Block block) {
+        BiomePathProfiles.PathProfile profile = BiomePathProfiles.profileFor(level, pos);
+
         if (block == Blocks.GRASS_BLOCK) {
             if (BiomePathProfiles.usesForestPodzolVariation(level, pos)) {
                 return Blocks.PODZOL;
@@ -140,9 +146,18 @@ public final class PathWearEvents {
             return Blocks.DIRT_PATH;
         }
         if (block == Blocks.DIRT_PATH) {
-            return BiomePathProfiles.profileFor(level, pos) == BiomePathProfiles.PathProfile.FOREST
-                    ? Blocks.ROOTED_DIRT
-                    : Blocks.COARSE_DIRT;
+            if (profile == BiomePathProfiles.PathProfile.DAMP) {
+                return BiomePathProfiles.usesDampMossVariation(level, pos)
+                        ? Blocks.MOSS_BLOCK
+                        : Blocks.ROOTED_DIRT;
+            }
+            if (profile == BiomePathProfiles.PathProfile.FOREST) {
+                return Blocks.ROOTED_DIRT;
+            }
+            return Blocks.COARSE_DIRT;
+        }
+        if (block == Blocks.MOSS_BLOCK) {
+            return Blocks.ROOTED_DIRT;
         }
         if (block == Blocks.ROOTED_DIRT) {
             return Blocks.COARSE_DIRT;
@@ -151,6 +166,10 @@ public final class PathWearEvents {
             return Blocks.GRAVEL;
         }
         if (block == Blocks.GRAVEL) {
+            if (profile == BiomePathProfiles.PathProfile.DAMP
+                    && BiomePathProfiles.usesDampMossyCobblestoneVariation(level, pos)) {
+                return Blocks.MOSSY_COBBLESTONE;
+            }
             return Blocks.COBBLESTONE;
         }
         return null;
