@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.path.PathWearData;
 import ch.minenox.livingpaths.path.PathWearEvents;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.Commands;
@@ -30,6 +31,12 @@ public final class LivingPathsDebugCommands {
                                                 .executes(context -> addWear(
                                                         context.getSource().getPlayerOrException(),
                                                         IntegerArgumentType.getInteger(context, "amount")
+                                                ))))
+                                .then(Commands.literal("agewear")
+                                        .then(Commands.argument("days", IntegerArgumentType.integer(1, 10_000))
+                                                .executes(context -> ageWear(
+                                                        context.getSource().getPlayerOrException(),
+                                                        IntegerArgumentType.getInteger(context, "days")
                                                 )))))
         );
     }
@@ -57,6 +64,20 @@ public final class LivingPathsDebugCommands {
         player.sendSystemMessage(Component.translatable(
                 "command.livingpaths.debug.addwear",
                 amount, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+        ));
+        return wear;
+    }
+
+    private static int ageWear(ServerPlayer player, int days) {
+        ServerLevel level = player.serverLevel();
+        var groundPos = player.getOnPos().immutable();
+        PathWearData.get(level).ageWearForDebug(groundPos, days);
+
+        int wear = PathWearEvents.getWear(level, groundPos);
+        int threshold = PathWearEvents.getThreshold(level, groundPos);
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.agewear",
+                days, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
         ));
         return wear;
     }
