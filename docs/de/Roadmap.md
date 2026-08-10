@@ -60,18 +60,20 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 ## 0.3.0 – Organic Paths
 
 - [x] Wegmitte und Randbereiche unterschiedlich behandeln
-- [ ] Stark genutzte Laufspuren stärker verschleissen lassen
-- [ ] Moos eher an wenig genutzten Rändern entstehen lassen
-- [ ] Natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien erzeugen
-- [ ] Kontrollierte Variation einführen, damit benachbarte Wegblöcke nicht immer identisch sind
+- [x] Stark genutzte Laufspuren stärker verschleissen lassen
+- [x] Moos eher an wenig genutzten Rändern entstehen lassen
+- [x] Natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien erzeugen
+- [x] Kontrollierte Variation einführen, damit benachbarte Wegblöcke nicht immer identisch sind
 - [ ] Wegentwicklung ausreichend deterministisch halten, damit keine sichtbaren Neuwürfe entstehen
 
-### Aktuelle Grundlage für Randverschleiss
+### Aktuelles Verhalten organischer Wege
 
-- Der direkt betretene Block erhält weiterhin vollen Verschleiss.
-- Jeder vierte gültige Spielerschritt gibt einem seitlichen Nachbarblock einen Verschleisspunkt.
-- Linke und rechte Wegschulter wechseln sich ab, damit keine dauerhafte Seitenbevorzugung entsteht.
+- Der direkt betretene Block erhält vollen Verschleiss und bleibt die dominante Wegmitte.
+- Ungefähr ein Viertel der betretenen Positionen gibt zusätzlich einen Verschleisspunkt an eine benachbarte Wegschulter.
+- Ob eine Position Randverschleiss erzeugt und welche Seite betroffen ist, wird aus der Blockposition abgeleitet. So entstehen stabile schmalere und breitere Abschnitte.
+- Beim Begehen derselben Strecke in Gegenrichtung wird dieselbe Wegschulter gewählt, statt die Seite zu spiegeln.
 - Grössere Positionssprünge und Teleports erzeugen keinen Randverschleiss.
+- Randdominierter Verschleiss kann in feuchten Biomen Moss und Mossy Cobblestone bevorzugen.
 - Randverschleiss verwendet dieselben Schutzregeln und biomabhängigen Entwicklungsregeln wie direkter Verschleiss.
 
 ## 0.4.0 – Entity Traffic
