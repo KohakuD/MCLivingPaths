@@ -2,12 +2,12 @@
 
 ## 0.1.0 – Basic Path Wear
 
-- [ ] Detect player movement server-side
-- [ ] Detect the ground blocks players walk on
-- [ ] Count usage per block position
-- [ ] Count a block only when the player actually moves onto a new ground block
-- [ ] Make Grass Blocks wear down
-- [ ] Implement the basic progression:
+- [x] Detect player movement server-side
+- [x] Detect the ground blocks players walk on
+- [x] Count usage per block position
+- [x] Count a block only when the player actually moves onto a new ground block
+- [x] Make Grass Blocks wear down
+- [x] Implement the basic progression:
   - Grass Block
   - Dirt Path
   - Coarse Dirt
@@ -16,8 +16,8 @@
 - [ ] Support Podzol
 - [ ] Support Mycelium
 - [ ] Make Podzol and Mycelium wear down significantly more slowly
-- [ ] Completely exclude Farmland from changes
-- [ ] Store wear data persistently
+- [x] Completely exclude Farmland from changes
+- [x] Store wear data persistently
 - [ ] Ensure multiplayer-safe server-side processing
 - [ ] Check performance during normal gameplay
 - [ ] Test the initial thresholds in-game and adjust them if necessary
