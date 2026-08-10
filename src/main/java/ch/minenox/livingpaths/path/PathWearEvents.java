@@ -130,7 +130,13 @@ public final class PathWearEvents {
     }
 
     private static Block nextBlockFor(ServerLevel level, BlockPos pos, Block block) {
-        if (block == Blocks.GRASS_BLOCK || block == Blocks.PODZOL || block == Blocks.MYCELIUM) {
+        if (block == Blocks.GRASS_BLOCK) {
+            if (BiomePathProfiles.usesForestPodzolVariation(level, pos)) {
+                return Blocks.PODZOL;
+            }
+            return Blocks.DIRT_PATH;
+        }
+        if (block == Blocks.PODZOL || block == Blocks.MYCELIUM) {
             return Blocks.DIRT_PATH;
         }
         if (block == Blocks.DIRT_PATH) {
