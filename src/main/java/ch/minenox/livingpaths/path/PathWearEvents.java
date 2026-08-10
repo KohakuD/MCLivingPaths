@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashMap;
@@ -26,6 +27,10 @@ public final class PathWearEvents {
     private static final int COARSE_DIRT_THRESHOLD = 100;
     private static final int GRAVEL_THRESHOLD = 200;
 
+    /**
+     * Runtime-only movement state. Wear itself is stored persistently in {@link PathWearData}.
+     * Each player is tracked independently so multiple players can contribute to the same path.
+     */
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
 
     private PathWearEvents() {
@@ -51,6 +56,11 @@ public final class PathWearEvents {
         }
 
         addWear(level, groundPos, 1);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        LAST_STEP.remove(event.getEntity().getUUID());
     }
 
     public static int addWear(ServerLevel level, BlockPos pos, int amount) {
