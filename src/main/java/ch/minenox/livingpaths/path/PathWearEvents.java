@@ -32,13 +32,14 @@ public final class PathWearEvents {
     private static final int GRAVEL_THRESHOLD = 200;
 
     /**
-     * A path edge receives one wear point for every four valid player steps. This keeps the directly
-     * travelled line dominant while allowing softer shoulders to emerge over long-term repeated use.
+     * Roughly one quarter of travelled positions contribute wear to a neighbouring shoulder.
+     * The decision and side are derived from the block position so path width stays stable across reloads.
      */
-    private static final int EDGE_WEAR_STEP_INTERVAL = 4;
+    private static final int EDGE_WEAR_POSITION_PERCENT = 25;
+    private static final long EDGE_WEAR_SALT = 0x45444745L;
+    private static final long EDGE_SIDE_SALT = 0x53494445L;
 
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
-    private static final Map<UUID, Integer> EDGE_STEP_COUNTER = new HashMap<>();
 
     private PathWearEvents() {
     }
@@ -63,19 +64,16 @@ public final class PathWearEvents {
         }
 
         addWear(level, groundPos, 1, false);
-        addOrganicEdgeWear(level, player.getUUID(), previousStep, currentStep);
+        addOrganicEdgeWear(level, previousStep, currentStep);
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        UUID playerId = event.getEntity().getUUID();
-        LAST_STEP.remove(playerId);
-        EDGE_STEP_COUNTER.remove(playerId);
+        LAST_STEP.remove(event.getEntity().getUUID());
     }
 
     private static void addOrganicEdgeWear(
             ServerLevel level,
-            UUID playerId,
             StepLocation previousStep,
             StepLocation currentStep
     ) {
@@ -94,14 +92,20 @@ public final class PathWearEvents {
             return;
         }
 
-        int stepCount = EDGE_STEP_COUNTER.merge(playerId, 1, Integer::sum);
-        if (stepCount % EDGE_WEAR_STEP_INTERVAL != 0) {
+        if (variationPercent(currentStep.pos(), EDGE_WEAR_SALT) >= EDGE_WEAR_POSITION_PERCENT) {
             return;
         }
 
         int sideX = -Integer.signum(dz);
         int sideZ = Integer.signum(dx);
-        if (((stepCount / EDGE_WEAR_STEP_INTERVAL) & 1) == 0) {
+
+        // Canonicalise the perpendicular vector so walking the same path in reverse selects the same shoulder.
+        if (sideX < 0 || (sideX == 0 && sideZ < 0)) {
+            sideX = -sideX;
+            sideZ = -sideZ;
+        }
+
+        if (variationPercent(currentStep.pos(), EDGE_SIDE_SALT) >= 50) {
             sideX = -sideX;
             sideZ = -sideZ;
         }
@@ -249,6 +253,10 @@ public final class PathWearEvents {
             return Blocks.COBBLESTONE;
         }
         return null;
+    }
+
+    private static int variationPercent(BlockPos pos, long salt) {
+        return Math.floorMod(Long.hashCode(pos.asLong() ^ salt), 100);
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
