@@ -2,12 +2,12 @@
 
 ## 0.1.0 – Basic Path Wear
 
-- [ ] Spielerbewegung serverseitig erkennen
-- [ ] Betretene Bodenblöcke erfassen
-- [ ] Nutzung pro Blockposition zählen
-- [ ] Einen Block nur beim tatsächlichen Wechsel auf einen neuen Bodenblock zählen
-- [ ] Grass Block verschleissen lassen
-- [ ] Grundkette umsetzen:
+- [x] Spielerbewegung serverseitig erkennen
+- [x] Betretene Bodenblöcke erfassen
+- [x] Nutzung pro Blockposition zählen
+- [x] Einen Block nur beim tatsächlichen Wechsel auf einen neuen Bodenblock zählen
+- [x] Grass Block verschleissen lassen
+- [x] Grundkette umsetzen:
   - Grass Block
   - Dirt Path
   - Coarse Dirt
@@ -16,8 +16,8 @@
 - [ ] Podzol unterstützen
 - [ ] Mycelium unterstützen
 - [ ] Podzol und Mycelium deutlich langsamer verschleissen lassen
-- [ ] Farmland vollständig von Veränderungen ausschliessen
-- [ ] Verschleissdaten persistent speichern
+- [x] Farmland vollständig von Veränderungen ausschliessen
+- [x] Verschleissdaten persistent speichern
 - [ ] Multiplayer-taugliche serverseitige Verarbeitung sicherstellen
 - [ ] Performance bei normalem Spielen prüfen
 - [ ] Erste Testschwellen im Spiel prüfen und bei Bedarf anpassen
