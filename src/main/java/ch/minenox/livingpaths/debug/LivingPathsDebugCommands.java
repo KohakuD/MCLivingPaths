@@ -1,0 +1,63 @@
+package ch.minenox.livingpaths.debug;
+
+import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.path.PathWearEvents;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+@EventBusSubscriber(modid = LivingPaths.MOD_ID)
+public final class LivingPathsDebugCommands {
+
+    private LivingPathsDebugCommands() {
+    }
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(
+                Commands.literal("livingpaths")
+                        .requires(source -> source.hasPermission(2))
+                        .then(Commands.literal("debug")
+                                .then(Commands.literal("status")
+                                        .executes(context -> showStatus(context.getSource().getPlayerOrException())))
+                                .then(Commands.literal("addwear")
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(1, 10_000))
+                                                .executes(context -> addWear(
+                                                        context.getSource().getPlayerOrException(),
+                                                        IntegerArgumentType.getInteger(context, "amount")
+                                                )))))
+        );
+    }
+
+    private static int showStatus(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        var groundPos = player.getOnPos().immutable();
+        int wear = PathWearEvents.getWear(level, groundPos);
+        int threshold = PathWearEvents.getThreshold(level, groundPos);
+
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.status",
+                groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+        ));
+        return wear;
+    }
+
+    private static int addWear(ServerPlayer player, int amount) {
+        ServerLevel level = player.serverLevel();
+        var groundPos = player.getOnPos().immutable();
+        PathWearEvents.addWear(level, groundPos, amount);
+
+        int wear = PathWearEvents.getWear(level, groundPos);
+        int threshold = PathWearEvents.getThreshold(level, groundPos);
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.addwear",
+                amount, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+        ));
+        return wear;
+    }
+}
