@@ -21,6 +21,8 @@ import java.util.UUID;
 public final class PathWearEvents {
 
     private static final int GRASS_THRESHOLD = 25;
+    private static final int MUD_THRESHOLD = 50;
+    private static final int PACKED_MUD_THRESHOLD = 75;
     private static final int PODZOL_THRESHOLD = 75;
     private static final int MYCELIUM_THRESHOLD = 75;
     private static final int DIRT_PATH_THRESHOLD = 50;
@@ -109,6 +111,12 @@ public final class PathWearEvents {
         if (block == Blocks.GRASS_BLOCK) {
             return GRASS_THRESHOLD;
         }
+        if (block == Blocks.MUD) {
+            return MUD_THRESHOLD;
+        }
+        if (block == Blocks.PACKED_MUD) {
+            return PACKED_MUD_THRESHOLD;
+        }
         if (block == Blocks.PODZOL) {
             return PODZOL_THRESHOLD;
         }
@@ -141,6 +149,17 @@ public final class PathWearEvents {
                 return Blocks.PODZOL;
             }
             return Blocks.DIRT_PATH;
+        }
+        if (block == Blocks.MUD) {
+            return Blocks.PACKED_MUD;
+        }
+        if (block == Blocks.PACKED_MUD) {
+            if (profile == BiomePathProfiles.PathProfile.DAMP) {
+                return BiomePathProfiles.usesDampMossVariation(level, pos)
+                        ? Blocks.MOSS_BLOCK
+                        : Blocks.ROOTED_DIRT;
+            }
+            return Blocks.COARSE_DIRT;
         }
         if (block == Blocks.PODZOL || block == Blocks.MYCELIUM) {
             return Blocks.DIRT_PATH;
