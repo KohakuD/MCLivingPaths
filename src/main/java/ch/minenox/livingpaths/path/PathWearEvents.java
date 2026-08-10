@@ -27,7 +27,6 @@ public final class PathWearEvents {
     private static final int GRAVEL_THRESHOLD = 200;
 
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
-    private static final Map<ResourceKey<Level>, Map<BlockPos, Integer>> WEAR = new HashMap<>();
 
     private PathWearEvents() {
     }
@@ -51,39 +50,47 @@ public final class PathWearEvents {
             return;
         }
 
-        recordWear(level, groundPos);
+        addWear(level, groundPos, 1);
     }
 
-    private static void recordWear(ServerLevel level, BlockPos pos) {
+    public static int addWear(ServerLevel level, BlockPos pos, int amount) {
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
+        PathWearData data = PathWearData.get(level);
 
         if (block == Blocks.FARMLAND) {
-            clearWear(level, pos);
-            return;
+            data.clearWear(pos);
+            return 0;
         }
 
         int threshold = thresholdFor(block);
         if (threshold <= 0) {
-            clearWear(level, pos);
-            return;
+            data.clearWear(pos);
+            return 0;
         }
 
-        Map<BlockPos, Integer> levelWear = WEAR.computeIfAbsent(level.dimension(), ignored -> new HashMap<>());
-        int visits = levelWear.merge(pos.immutable(), 1, Integer::sum);
-
+        int visits = data.addWear(pos, amount);
         if (visits < threshold) {
-            return;
+            return visits;
         }
 
         Block nextBlock = nextBlockFor(block);
         if (nextBlock == null) {
-            levelWear.remove(pos);
-            return;
+            data.clearWear(pos);
+            return 0;
         }
 
         level.setBlockAndUpdate(pos, nextBlock.defaultBlockState());
-        levelWear.remove(pos);
+        data.clearWear(pos);
+        return 0;
+    }
+
+    public static int getWear(ServerLevel level, BlockPos pos) {
+        return PathWearData.get(level).getWear(pos);
+    }
+
+    public static int getThreshold(ServerLevel level, BlockPos pos) {
+        return thresholdFor(level.getBlockState(pos).getBlock());
     }
 
     private static int thresholdFor(Block block) {
@@ -122,13 +129,6 @@ public final class PathWearEvents {
             return Blocks.COBBLESTONE;
         }
         return null;
-    }
-
-    private static void clearWear(ServerLevel level, BlockPos pos) {
-        Map<BlockPos, Integer> levelWear = WEAR.get(level.dimension());
-        if (levelWear != null) {
-            levelWear.remove(pos);
-        }
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
