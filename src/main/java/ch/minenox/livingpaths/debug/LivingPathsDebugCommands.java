@@ -6,6 +6,8 @@ import ch.minenox.livingpaths.path.PathWearData;
 import ch.minenox.livingpaths.path.PathWearEvents;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +29,8 @@ public final class LivingPathsDebugCommands {
                         .then(Commands.literal("debug")
                                 .then(Commands.literal("status")
                                         .executes(context -> showStatus(context.getSource().getPlayerOrException())))
+                                .then(Commands.literal("inspect")
+                                        .executes(context -> inspectPath(context.getSource().getPlayerOrException())))
                                 .then(Commands.literal("profile")
                                         .executes(context -> showProfile(context.getSource().getPlayerOrException())))
                                 .then(Commands.literal("addwear")
@@ -55,6 +59,34 @@ public final class LivingPathsDebugCommands {
                 groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
         ));
         return wear;
+    }
+
+    private static int inspectPath(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        BlockPos centre = player.getOnPos().immutable();
+        Direction forward = player.getDirection();
+        Direction leftDirection = forward.getCounterClockWise();
+        Direction rightDirection = forward.getClockWise();
+        BlockPos left = centre.relative(leftDirection);
+        BlockPos right = centre.relative(rightDirection);
+
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.inspect.header",
+                forward.getName()
+        ));
+        sendInspectEntry(player, level, "command.livingpaths.debug.inspect.left", left);
+        sendInspectEntry(player, level, "command.livingpaths.debug.inspect.centre", centre);
+        sendInspectEntry(player, level, "command.livingpaths.debug.inspect.right", right);
+        return 1;
+    }
+
+    private static void sendInspectEntry(ServerPlayer player, ServerLevel level, String translationKey, BlockPos pos) {
+        int wear = PathWearEvents.getWear(level, pos);
+        int threshold = PathWearEvents.getThreshold(level, pos);
+        player.sendSystemMessage(Component.translatable(
+                translationKey,
+                pos.getX(), pos.getY(), pos.getZ(), wear, threshold
+        ));
     }
 
     private static int showProfile(ServerPlayer player) {
