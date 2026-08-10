@@ -1,10 +1,11 @@
 {
-  "command.livingpaths.debug.status": "Living-Paths-Debug: Block bei %s %s %s hat %s Abnutzung (Schwelle: %s).",
-  "command.livingpaths.debug.addwear": "%s Abnutzung zum Block bei %s %s %s hinzugefügt. Aktuell: %s (Schwelle: %s).",
-  "command.livingpaths.debug.agewear": "Abnutzung bei %s %s %s um %s Minecraft-Tag(e) gealtert. Aktuell: %s (Schwelle: %s).",
+  "command.livingpaths.debug.status": "Living-Paths-Debug: Block bei %s %s %s hat %s Abnutzung (%s Rand, Schwelle: %s).",
+  "command.livingpaths.debug.addwear": "%s Mittel-Abnutzung zum Block bei %s %s %s hinzugefügt. Aktuell: %s (%s Rand, Schwelle: %s).",
+  "command.livingpaths.debug.addedgewear": "%s Rand-Abnutzung zum Block bei %s %s %s hinzugefügt. Aktuell: %s (%s Rand, Schwelle: %s).",
+  "command.livingpaths.debug.agewear": "Abnutzung bei %s %s %s um %s Minecraft-Tag(e) gealtert. Aktuell: %s (%s Rand, Schwelle: %s).",
   "command.livingpaths.debug.profile": "Living-Paths-Debug: Block bei %s %s %s verwendet das Profil %s.",
   "command.livingpaths.debug.inspect.header": "Living Paths prüfen (Blickrichtung %s):",
-  "command.livingpaths.debug.inspect.left": "Links  %s %s %s: Abnutzung %s / %s",
-  "command.livingpaths.debug.inspect.centre": "Mitte  %s %s %s: Abnutzung %s / %s",
-  "command.livingpaths.debug.inspect.right": "Rechts %s %s %s: Abnutzung %s / %s"
+  "command.livingpaths.debug.inspect.left": "Links  %s %s %s: Abnutzung %s (%s Rand) / %s",
+  "command.livingpaths.debug.inspect.centre": "Mitte  %s %s %s: Abnutzung %s (%s Rand) / %s",
+  "command.livingpaths.debug.inspect.right": "Rechts %s %s %s: Abnutzung %s (%s Rand) / %s"
 }
