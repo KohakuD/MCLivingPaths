@@ -13,9 +13,9 @@
   - Coarse Dirt
   - Gravel
   - Cobblestone
-- [ ] Support Podzol
-- [ ] Support Mycelium
-- [ ] Make Podzol and Mycelium wear down significantly more slowly
+- [x] Support Podzol
+- [x] Support Mycelium
+- [x] Make Podzol and Mycelium wear down significantly more slowly
 - [x] Completely exclude Farmland from changes
 - [x] Store wear data persistently
 - [ ] Ensure multiplayer-safe server-side processing
