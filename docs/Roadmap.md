@@ -18,17 +18,22 @@
 - [x] Make Podzol and Mycelium wear down significantly more slowly
 - [x] Completely exclude Farmland from changes
 - [x] Store wear data persistently
-- [ ] Ensure multiplayer-safe server-side processing
-- [ ] Check performance during normal gameplay
-- [ ] Test the initial thresholds in-game and adjust them if necessary
+- [x] Decay and remove stale wear data so world saves do not grow indefinitely
+- [x] Implement multiplayer-safe server-side processing
+- [x] Check performance during normal gameplay
+- [x] Test the initial thresholds in-game and keep them as the first defaults
 
-### Initial Test Thresholds
+### Initial Default Thresholds
 
 - 25 crossings: Grass Block → Dirt Path
 - 50 additional crossings: Dirt Path → Coarse Dirt
 - 100 additional crossings: Coarse Dirt → Gravel
 - 200 additional crossings: Gravel → Cobblestone
-- Podzol/Mycelium: initially approximately 3× the resistance of Grass Blocks
+- Podzol/Mycelium: approximately 3× the resistance of Grass Blocks
+
+### Validation Note
+
+The server-side implementation is designed so multiple players can contribute to the same path wear data independently. A real two-player validation test is still desirable when possible, but it is not considered a blocker for 0.1.0.
 
 ## Planned Development
 
