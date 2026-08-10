@@ -37,7 +37,15 @@ public final class LivingPathsDebugCommands {
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(1, 10_000))
                                                 .executes(context -> addWear(
                                                         context.getSource().getPlayerOrException(),
-                                                        IntegerArgumentType.getInteger(context, "amount")
+                                                        IntegerArgumentType.getInteger(context, "amount"),
+                                                        false
+                                                ))))
+                                .then(Commands.literal("addedgewear")
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(1, 10_000))
+                                                .executes(context -> addWear(
+                                                        context.getSource().getPlayerOrException(),
+                                                        IntegerArgumentType.getInteger(context, "amount"),
+                                                        true
                                                 ))))
                                 .then(Commands.literal("agewear")
                                         .then(Commands.argument("days", IntegerArgumentType.integer(1, 10_000))
@@ -52,11 +60,12 @@ public final class LivingPathsDebugCommands {
         ServerLevel level = player.serverLevel();
         var groundPos = player.getOnPos().immutable();
         int wear = PathWearEvents.getWear(level, groundPos);
+        int edgeWear = PathWearEvents.getEdgeWear(level, groundPos);
         int threshold = PathWearEvents.getThreshold(level, groundPos);
 
         player.sendSystemMessage(Component.translatable(
                 "command.livingpaths.debug.status",
-                groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+                groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, edgeWear, threshold
         ));
         return wear;
     }
@@ -82,10 +91,11 @@ public final class LivingPathsDebugCommands {
 
     private static void sendInspectEntry(ServerPlayer player, ServerLevel level, String translationKey, BlockPos pos) {
         int wear = PathWearEvents.getWear(level, pos);
+        int edgeWear = PathWearEvents.getEdgeWear(level, pos);
         int threshold = PathWearEvents.getThreshold(level, pos);
         player.sendSystemMessage(Component.translatable(
                 translationKey,
-                pos.getX(), pos.getY(), pos.getZ(), wear, threshold
+                pos.getX(), pos.getY(), pos.getZ(), wear, edgeWear, threshold
         ));
     }
 
@@ -101,16 +111,22 @@ public final class LivingPathsDebugCommands {
         return profile.ordinal() + 1;
     }
 
-    private static int addWear(ServerPlayer player, int amount) {
+    private static int addWear(ServerPlayer player, int amount, boolean edgeWear) {
         ServerLevel level = player.serverLevel();
         var groundPos = player.getOnPos().immutable();
-        PathWearEvents.addWear(level, groundPos, amount);
+
+        if (edgeWear) {
+            PathWearEvents.addEdgeWear(level, groundPos, amount);
+        } else {
+            PathWearEvents.addWear(level, groundPos, amount);
+        }
 
         int wear = PathWearEvents.getWear(level, groundPos);
+        int edge = PathWearEvents.getEdgeWear(level, groundPos);
         int threshold = PathWearEvents.getThreshold(level, groundPos);
         player.sendSystemMessage(Component.translatable(
-                "command.livingpaths.debug.addwear",
-                amount, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+                edgeWear ? "command.livingpaths.debug.addedgewear" : "command.livingpaths.debug.addwear",
+                amount, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, edge, threshold
         ));
         return wear;
     }
@@ -121,10 +137,11 @@ public final class LivingPathsDebugCommands {
         PathWearData.get(level).ageWearForDebug(groundPos, days);
 
         int wear = PathWearEvents.getWear(level, groundPos);
+        int edgeWear = PathWearEvents.getEdgeWear(level, groundPos);
         int threshold = PathWearEvents.getThreshold(level, groundPos);
         player.sendSystemMessage(Component.translatable(
                 "command.livingpaths.debug.agewear",
-                days, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, threshold
+                days, groundPos.getX(), groundPos.getY(), groundPos.getZ(), wear, edgeWear, threshold
         ));
         return wear;
     }
