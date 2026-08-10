@@ -1,10 +1,11 @@
 {
-  "command.livingpaths.debug.status": "Living Paths debug: block at %s %s %s has %s wear (threshold: %s).",
-  "command.livingpaths.debug.addwear": "Added %s wear to block at %s %s %s. Current wear: %s (threshold: %s).",
-  "command.livingpaths.debug.agewear": "Aged wear by %s Minecraft day(s) at %s %s %s. Current wear: %s (threshold: %s).",
+  "command.livingpaths.debug.status": "Living Paths debug: block at %s %s %s has %s wear (%s edge, threshold: %s).",
+  "command.livingpaths.debug.addwear": "Added %s centre wear to block at %s %s %s. Current wear: %s (%s edge, threshold: %s).",
+  "command.livingpaths.debug.addedgewear": "Added %s edge wear to block at %s %s %s. Current wear: %s (%s edge, threshold: %s).",
+  "command.livingpaths.debug.agewear": "Aged wear by %s Minecraft day(s) at %s %s %s. Current wear: %s (%s edge, threshold: %s).",
   "command.livingpaths.debug.profile": "Living Paths debug: block at %s %s %s uses profile %s.",
   "command.livingpaths.debug.inspect.header": "Living Paths inspect (facing %s):",
-  "command.livingpaths.debug.inspect.left": "Left   %s %s %s: wear %s / %s",
-  "command.livingpaths.debug.inspect.centre": "Centre %s %s %s: wear %s / %s",
-  "command.livingpaths.debug.inspect.right": "Right  %s %s %s: wear %s / %s"
+  "command.livingpaths.debug.inspect.left": "Left   %s %s %s: wear %s (%s edge) / %s",
+  "command.livingpaths.debug.inspect.centre": "Centre %s %s %s: wear %s (%s edge) / %s",
+  "command.livingpaths.debug.inspect.right": "Right  %s %s %s: wear %s (%s edge) / %s"
 }
