@@ -45,10 +45,10 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Moss und Mossy Cobblestone in geeignete feuchte Wege integrieren
 - [x] Mud als verschleissbaren Ausgangsblock ergänzen
 - [x] Packed Mud als verdichtete Zwischenstufe vor trockeneren Wegmaterialien ergänzen
-- [ ] Offene Landschaft nahe an der 0.1.0-Grundkette halten
+- [x] Offene Landschaft nahe an der 0.1.0-Grundkette halten
 - [x] Nicht jeden Block eines Bioms zwingend durch exakt dieselbe Kette schicken
 - [x] Farmland in allen Biomprofilen geschützt lassen
-- [ ] Biomübergänge im Spiel testen
+- [x] Biomübergänge im Spiel testen
 
 ### Standardwerte für feuchte Wege
 
@@ -59,12 +59,20 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 
 ## 0.3.0 – Organic Paths
 
-- [ ] Wegmitte und Randbereiche unterschiedlich behandeln
+- [x] Wegmitte und Randbereiche unterschiedlich behandeln
 - [ ] Stark genutzte Laufspuren stärker verschleissen lassen
 - [ ] Moos eher an wenig genutzten Rändern entstehen lassen
 - [ ] Natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien erzeugen
 - [ ] Kontrollierte Variation einführen, damit benachbarte Wegblöcke nicht immer identisch sind
 - [ ] Wegentwicklung ausreichend deterministisch halten, damit keine sichtbaren Neuwürfe entstehen
+
+### Aktuelle Grundlage für Randverschleiss
+
+- Der direkt betretene Block erhält weiterhin vollen Verschleiss.
+- Jeder vierte gültige Spielerschritt gibt einem seitlichen Nachbarblock einen Verschleisspunkt.
+- Linke und rechte Wegschulter wechseln sich ab, damit keine dauerhafte Seitenbevorzugung entsteht.
+- Grössere Positionssprünge und Teleports erzeugen keinen Randverschleiss.
+- Randverschleiss verwendet dieselben Schutzregeln und biomabhängigen Entwicklungsregeln wie direkter Verschleiss.
 
 ## 0.4.0 – Entity Traffic
 
