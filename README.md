@@ -1,25 +1,57 @@
+# Living Paths
 
-Installation information
-=======
+Living Paths is a NeoForge mod for Minecraft 1.21.1 that lets frequently travelled terrain evolve into natural-looking paths over time.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+The goal is to make movement leave visible, persistent traces in the world without turning the mod into an automatic road builder.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+## Current status
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+Living Paths is currently in early development (`0.1.0`).
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+The first version focuses on player-created wear:
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+- track actual movement across ground blocks
+- evolve frequently travelled grass into progressively stronger path materials
+- support Podzol and Mycelium with greater wear resistance
+- never modify Farmland
+- store wear data persistently
+- process path wear server-side and remain multiplayer-friendly
+
+Initial wear chain:
+
+`Grass Block -> Dirt Path -> Coarse Dirt -> Gravel -> Cobblestone`
+
+Future versions are planned to add biome-aware path variants, moss and rooted dirt, more organic path edges, vanilla entities and MineColonies citizens.
+
+## Documentation
+
+- [Design](docs/Design.md)
+- [Roadmap](docs/Roadmap.md)
+- [Deutsches Design](docs/de/Design.md)
+- [Deutsche Roadmap](docs/de/Roadmap.md)
+
+## Development
+
+- Minecraft: `1.21.1`
+- NeoForge: `21.1.x`
+- Java: `21`
+
+Build the project with:
+
+```powershell
+.\gradlew.bat build
+```
+
+Run the development client with:
+
+```powershell
+.\gradlew.bat runClient
+```
+
+## Languages
+
+English is the primary project and mod language. German (`de_de`) is maintained alongside English from the beginning.
+
+## License
+
+All Rights Reserved.
