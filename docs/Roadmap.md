@@ -45,10 +45,10 @@ The server-side implementation is designed so multiple players can contribute to
 - [x] Integrate Moss and Mossy Cobblestone into suitable damp paths
 - [x] Add Mud as a wearable starting block
 - [x] Add Packed Mud as a compacted intermediate stage before drier path materials
-- [ ] Keep open-landscape paths close to the 0.1.0 progression
+- [x] Keep open-landscape paths close to the 0.1.0 progression
 - [x] Avoid forcing every block in a biome through exactly the same sequence
 - [x] Keep Farmland protected in every biome profile
-- [ ] Validate biome transitions in-game
+- [x] Validate biome transitions in-game
 
 ### Damp-path defaults
 
@@ -59,12 +59,20 @@ The server-side implementation is designed so multiple players can contribute to
 
 ## 0.3.0 – Organic Paths
 
-- [ ] Treat path centres and edges differently
+- [x] Treat path centres and edges differently
 - [ ] Let heavily travelled tracks wear down more strongly
 - [ ] Allow Moss to develop more often along lightly travelled edges
 - [ ] Create natural-looking path widths instead of single uniform block lines
 - [ ] Introduce controlled variation so neighbouring path blocks do not always match
 - [ ] Keep path generation deterministic enough to avoid visual flicker or repeated rerolls
+
+### Current edge-wear foundation
+
+- The directly travelled block receives full wear as before.
+- Every fourth valid player step contributes one wear point to one side of the travelled line.
+- Left and right shoulders alternate to avoid a permanent directional bias.
+- Large position jumps and teleports do not create edge wear.
+- Edge wear uses the same protected-block and biome-aware progression rules as direct wear.
 
 ## 0.4.0 – Entity Traffic
 
