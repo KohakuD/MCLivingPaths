@@ -13,9 +13,9 @@
   - Coarse Dirt
   - Gravel
   - Cobblestone
-- [ ] Podzol unterstützen
-- [ ] Mycelium unterstützen
-- [ ] Podzol und Mycelium deutlich langsamer verschleissen lassen
+- [x] Podzol unterstützen
+- [x] Mycelium unterstützen
+- [x] Podzol und Mycelium deutlich langsamer verschleissen lassen
 - [x] Farmland vollständig von Veränderungen ausschliessen
 - [x] Verschleissdaten persistent speichern
 - [ ] Multiplayer-taugliche serverseitige Verarbeitung sicherstellen
