@@ -24,6 +24,7 @@ public final class PathWearEvents {
     private static final int PODZOL_THRESHOLD = 75;
     private static final int MYCELIUM_THRESHOLD = 75;
     private static final int DIRT_PATH_THRESHOLD = 50;
+    private static final int ROOTED_DIRT_THRESHOLD = 75;
     private static final int COARSE_DIRT_THRESHOLD = 100;
     private static final int GRAVEL_THRESHOLD = 200;
 
@@ -84,7 +85,7 @@ public final class PathWearEvents {
             return visits;
         }
 
-        Block nextBlock = nextBlockFor(block);
+        Block nextBlock = nextBlockFor(level, pos, block);
         if (nextBlock == null) {
             data.clearWear(pos);
             return 0;
@@ -116,6 +117,9 @@ public final class PathWearEvents {
         if (block == Blocks.DIRT_PATH) {
             return DIRT_PATH_THRESHOLD;
         }
+        if (block == Blocks.ROOTED_DIRT) {
+            return ROOTED_DIRT_THRESHOLD;
+        }
         if (block == Blocks.COARSE_DIRT) {
             return COARSE_DIRT_THRESHOLD;
         }
@@ -125,11 +129,16 @@ public final class PathWearEvents {
         return -1;
     }
 
-    private static Block nextBlockFor(Block block) {
+    private static Block nextBlockFor(ServerLevel level, BlockPos pos, Block block) {
         if (block == Blocks.GRASS_BLOCK || block == Blocks.PODZOL || block == Blocks.MYCELIUM) {
             return Blocks.DIRT_PATH;
         }
         if (block == Blocks.DIRT_PATH) {
+            return BiomePathProfiles.profileFor(level, pos) == BiomePathProfiles.PathProfile.FOREST
+                    ? Blocks.ROOTED_DIRT
+                    : Blocks.COARSE_DIRT;
+        }
+        if (block == Blocks.ROOTED_DIRT) {
             return Blocks.COARSE_DIRT;
         }
         if (block == Blocks.COARSE_DIRT) {
