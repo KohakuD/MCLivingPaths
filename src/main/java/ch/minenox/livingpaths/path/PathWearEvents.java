@@ -32,10 +32,17 @@ public final class PathWearEvents {
     private static final int GRAVEL_THRESHOLD = 200;
 
     /**
+     * A path edge receives one wear point for every four valid player steps. This keeps the directly
+     * travelled line dominant while allowing softer shoulders to emerge over long-term repeated use.
+     */
+    private static final int EDGE_WEAR_STEP_INTERVAL = 4;
+
+    /**
      * Runtime-only movement state. Wear itself is stored persistently in {@link PathWearData}.
      * Each player is tracked independently so multiple players can contribute to the same path.
      */
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
+    private static final Map<UUID, Integer> EDGE_STEP_COUNTER = new HashMap<>();
 
     private PathWearEvents() {
     }
@@ -60,11 +67,53 @@ public final class PathWearEvents {
         }
 
         addWear(level, groundPos, 1);
+        addOrganicEdgeWear(level, player.getUUID(), previousStep, currentStep);
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        LAST_STEP.remove(event.getEntity().getUUID());
+        UUID playerId = event.getEntity().getUUID();
+        LAST_STEP.remove(playerId);
+        EDGE_STEP_COUNTER.remove(playerId);
+    }
+
+    private static void addOrganicEdgeWear(
+            ServerLevel level,
+            UUID playerId,
+            StepLocation previousStep,
+            StepLocation currentStep
+    ) {
+        if (previousStep == null || previousStep.dimension() != currentStep.dimension()) {
+            return;
+        }
+
+        int dx = currentStep.pos().getX() - previousStep.pos().getX();
+        int dz = currentStep.pos().getZ() - previousStep.pos().getZ();
+        int dy = currentStep.pos().getY() - previousStep.pos().getY();
+
+        // Ignore teleports and other large position changes. Normal walking changes X/Z by at most one block.
+        if ((dx == 0 && dz == 0)
+                || Math.abs(dx) > 1
+                || Math.abs(dz) > 1
+                || Math.abs(dy) > 1) {
+            return;
+        }
+
+        int stepCount = EDGE_STEP_COUNTER.merge(playerId, 1, Integer::sum);
+        if (stepCount % EDGE_WEAR_STEP_INTERVAL != 0) {
+            return;
+        }
+
+        // A perpendicular vector points to the path shoulder. Alternate sides to avoid a permanent bias.
+        int sideX = -Integer.signum(dz);
+        int sideZ = Integer.signum(dx);
+        if (((stepCount / EDGE_WEAR_STEP_INTERVAL) & 1) == 0) {
+            sideX = -sideX;
+            sideZ = -sideZ;
+        }
+
+        BlockPos edgePos = currentStep.pos().offset(sideX, 0, sideZ);
+        addWear(level, edgePos, 1);
     }
 
     public static int addWear(ServerLevel level, BlockPos pos, int amount) {
