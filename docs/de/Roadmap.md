@@ -37,16 +37,25 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 
 ## 0.2.0 – Biome Paths
 
-- [ ] Biom-Wegprofile einführen, ohne sie mit der Verschleiss-Speicherlogik zu vermischen
-- [ ] Wald-Biome datengetrieben über Biome-Tags erkennen
-- [ ] Rooted Dirt in die Waldweg-Entwicklung integrieren
-- [ ] Podzol stärker in Waldvarianten integrieren
-- [ ] Profil für feuchte/stark bewachsene Biome ergänzen
-- [ ] Moss und Mossy Cobblestone in geeignete feuchte Wege integrieren
+- [x] Biom-Wegprofile einführen, ohne sie mit der Verschleiss-Speicherlogik zu vermischen
+- [x] Wald-Biome datengetrieben über Biome-Tags erkennen
+- [x] Rooted Dirt in die Waldweg-Entwicklung integrieren
+- [x] Podzol stärker in Waldvarianten integrieren
+- [x] Profil für feuchte/stark bewachsene Biome ergänzen
+- [x] Moss und Mossy Cobblestone in geeignete feuchte Wege integrieren
+- [x] Mud als verschleissbaren Ausgangsblock ergänzen
+- [x] Packed Mud als verdichtete Zwischenstufe vor trockeneren Wegmaterialien ergänzen
 - [ ] Offene Landschaft nahe an der 0.1.0-Grundkette halten
-- [ ] Nicht jeden Block eines Bioms zwingend durch exakt dieselbe Kette schicken
-- [ ] Farmland in allen Biomprofilen geschützt lassen
+- [x] Nicht jeden Block eines Bioms zwingend durch exakt dieselbe Kette schicken
+- [x] Farmland in allen Biomprofilen geschützt lassen
 - [ ] Biomübergänge im Spiel testen
+
+### Standardwerte für feuchte Wege
+
+- Mud: 50 Übertritte → Packed Mud
+- Packed Mud: weitere 75 Übertritte → Moss Block oder Rooted Dirt in feuchten Biomen
+- Ausserhalb feuchter Biome entwickelt sich Packed Mud zu Coarse Dirt
+- Feuchte Wege können später abhängig von der stabilen Blockpositions-Variation in Cobblestone oder Mossy Cobblestone enden
 
 ## 0.3.0 – Organic Paths
 
