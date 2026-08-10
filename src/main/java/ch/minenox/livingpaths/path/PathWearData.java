@@ -17,6 +17,7 @@ public final class PathWearData extends SavedData {
     private static final String WEAR_KEY = "wear";
     private static final String POSITION_KEY = "position";
     private static final String VISITS_KEY = "visits";
+    private static final String EDGE_VISITS_KEY = "edgeVisits";
     private static final String LAST_USED_KEY = "lastUsed";
 
     private static final long TICKS_PER_MINECRAFT_DAY = 24_000L;
@@ -41,12 +42,18 @@ public final class PathWearData extends SavedData {
             CompoundTag entry = wearEntries.getCompound(index);
             long position = entry.getLong(POSITION_KEY);
             int visits = entry.getInt(VISITS_KEY);
+            int edgeVisits = entry.contains(EDGE_VISITS_KEY, Tag.TAG_INT)
+                    ? entry.getInt(EDGE_VISITS_KEY)
+                    : 0;
             long lastUsed = entry.contains(LAST_USED_KEY, Tag.TAG_LONG)
                     ? entry.getLong(LAST_USED_KEY)
                     : 0L;
 
             if (visits > 0) {
-                data.wearByPosition.put(position, new WearEntry(visits, lastUsed));
+                data.wearByPosition.put(
+                        position,
+                        new WearEntry(visits, Math.min(edgeVisits, visits), lastUsed)
+                );
             }
         }
 
@@ -61,6 +68,7 @@ public final class PathWearData extends SavedData {
             CompoundTag entry = new CompoundTag();
             entry.putLong(POSITION_KEY, wearEntry.getKey());
             entry.putInt(VISITS_KEY, wearEntry.getValue().visits());
+            entry.putInt(EDGE_VISITS_KEY, wearEntry.getValue().edgeVisits());
             entry.putLong(LAST_USED_KEY, wearEntry.getValue().lastUsedGameTime());
             wearEntries.add(entry);
         }
@@ -69,7 +77,7 @@ public final class PathWearData extends SavedData {
         return tag;
     }
 
-    public int addWear(BlockPos pos, int amount, long gameTime) {
+    public int addWear(BlockPos pos, int amount, long gameTime, boolean edgeWear) {
         if (amount <= 0) {
             return getWear(pos, gameTime);
         }
@@ -79,9 +87,11 @@ public final class PathWearData extends SavedData {
         long key = pos.asLong();
         WearEntry previous = wearByPosition.get(key);
         int currentWear = previous == null ? 0 : effectiveWear(previous, gameTime);
+        int currentEdgeWear = previous == null ? 0 : effectiveEdgeWear(previous, gameTime);
         int updatedWear = currentWear + amount;
+        int updatedEdgeWear = Math.min(updatedWear, currentEdgeWear + (edgeWear ? amount : 0));
 
-        wearByPosition.put(key, new WearEntry(updatedWear, gameTime));
+        wearByPosition.put(key, new WearEntry(updatedWear, updatedEdgeWear, gameTime));
         setDirty();
         return updatedWear;
     }
@@ -102,6 +112,22 @@ public final class PathWearData extends SavedData {
         return effectiveWear;
     }
 
+    public int getEdgeWear(BlockPos pos, long gameTime) {
+        WearEntry entry = wearByPosition.get(pos.asLong());
+        if (entry == null) {
+            return 0;
+        }
+
+        int effectiveWear = effectiveWear(entry, gameTime);
+        if (effectiveWear <= 0) {
+            wearByPosition.remove(pos.asLong());
+            setDirty();
+            return 0;
+        }
+
+        return Math.min(effectiveWear, effectiveEdgeWear(entry, gameTime));
+    }
+
     public void clearWear(BlockPos pos) {
         if (wearByPosition.remove(pos.asLong()) != null) {
             setDirty();
@@ -120,7 +146,10 @@ public final class PathWearData extends SavedData {
         }
 
         long agedLastUsed = entry.lastUsedGameTime() - days * TICKS_PER_MINECRAFT_DAY;
-        wearByPosition.put(key, new WearEntry(entry.visits(), agedLastUsed));
+        wearByPosition.put(
+                key,
+                new WearEntry(entry.visits(), entry.edgeVisits(), agedLastUsed)
+        );
         setDirty();
     }
 
@@ -141,12 +170,21 @@ public final class PathWearData extends SavedData {
     }
 
     private static int effectiveWear(WearEntry entry, long gameTime) {
-        long inactiveTicks = Math.max(0L, gameTime - entry.lastUsedGameTime());
-        long inactiveDays = inactiveTicks / TICKS_PER_MINECRAFT_DAY;
-        long decay = inactiveDays * WEAR_DECAY_PER_INACTIVE_DAY;
+        long decay = decaySince(entry, gameTime);
         return (int) Math.max(0L, (long) entry.visits() - decay);
     }
 
-    private record WearEntry(int visits, long lastUsedGameTime) {
+    private static int effectiveEdgeWear(WearEntry entry, long gameTime) {
+        long decay = decaySince(entry, gameTime);
+        return (int) Math.max(0L, (long) entry.edgeVisits() - decay);
+    }
+
+    private static long decaySince(WearEntry entry, long gameTime) {
+        long inactiveTicks = Math.max(0L, gameTime - entry.lastUsedGameTime());
+        long inactiveDays = inactiveTicks / TICKS_PER_MINECRAFT_DAY;
+        return inactiveDays * WEAR_DECAY_PER_INACTIVE_DAY;
+    }
+
+    private record WearEntry(int visits, int edgeVisits, long lastUsedGameTime) {
     }
 }
