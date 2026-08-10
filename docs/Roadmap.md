@@ -60,18 +60,20 @@ The server-side implementation is designed so multiple players can contribute to
 ## 0.3.0 – Organic Paths
 
 - [x] Treat path centres and edges differently
-- [ ] Let heavily travelled tracks wear down more strongly
-- [ ] Allow Moss to develop more often along lightly travelled edges
-- [ ] Create natural-looking path widths instead of single uniform block lines
-- [ ] Introduce controlled variation so neighbouring path blocks do not always match
+- [x] Let heavily travelled tracks wear down more strongly
+- [x] Allow Moss to develop more often along lightly travelled edges
+- [x] Create natural-looking path widths instead of single uniform block lines
+- [x] Introduce controlled variation so neighbouring path blocks do not always match
 - [ ] Keep path generation deterministic enough to avoid visual flicker or repeated rerolls
 
-### Current edge-wear foundation
+### Current organic-path behaviour
 
-- The directly travelled block receives full wear as before.
-- Every fourth valid player step contributes one wear point to one side of the travelled line.
-- Left and right shoulders alternate to avoid a permanent directional bias.
+- The directly travelled block receives full wear and remains the dominant track centre.
+- Roughly one quarter of travelled positions contribute one additional wear point to a neighbouring shoulder.
+- Whether a position creates shoulder wear and which side receives it are derived from the block position, producing stable narrow and wide sections.
+- Walking the same route in the opposite direction selects the same shoulder rather than mirroring it.
 - Large position jumps and teleports do not create edge wear.
+- Edge-dominated wear can favour Moss and Mossy Cobblestone in damp biomes.
 - Edge wear uses the same protected-block and biome-aware progression rules as direct wear.
 
 ## 0.4.0 – Entity Traffic
