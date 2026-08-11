@@ -137,7 +137,9 @@ public final class PathWearEvents {
 
     private static boolean isWearableExposedSurface(ServerLevel level, BlockPos pos) {
         Block block = level.getBlockState(pos).getBlock();
-        if (thresholdFor(block) <= 0 || ProtectedBlocks.contains(block)) {
+        if (ProtectedBlocks.contains(block)
+                || thresholdFor(block) <= 0
+                || (block == Blocks.COBBLESTONE && !PathWearData.get(level).isEstablished(pos))) {
             return false;
         }
 
@@ -163,9 +165,18 @@ public final class PathWearEvents {
             return 0;
         }
 
+        if (block == Blocks.COBBLESTONE && !data.isEstablished(pos)) {
+            data.clearWear(pos);
+            return 0;
+        }
+
         int threshold = thresholdFor(block);
         if (threshold <= 0) {
-            data.clearWear(pos);
+            if (data.isEstablished(pos)) {
+                data.markEstablished(pos, level.getGameTime());
+            } else {
+                data.clearWear(pos);
+            }
             return 0;
         }
 
@@ -197,7 +208,11 @@ public final class PathWearEvents {
 
     public static int getThreshold(ServerLevel level, BlockPos pos) {
         Block block = level.getBlockState(pos).getBlock();
-        return ProtectedBlocks.contains(block) ? -1 : thresholdFor(block);
+        if (ProtectedBlocks.contains(block)
+                || (block == Blocks.COBBLESTONE && !PathWearData.get(level).isEstablished(pos))) {
+            return -1;
+        }
+        return thresholdFor(block);
     }
 
     private static int thresholdFor(Block block) {
@@ -233,6 +248,9 @@ public final class PathWearEvents {
         }
         if (block == Blocks.STONE) {
             return LivingPathsConfig.STONE_THRESHOLD.get();
+        }
+        if (block == Blocks.COBBLESTONE) {
+            return LivingPathsConfig.COBBLESTONE_THRESHOLD.get();
         }
         return -1;
     }
@@ -279,6 +297,9 @@ public final class PathWearEvents {
         }
         if (block == Blocks.COARSE_DIRT) {
             return Blocks.GRAVEL;
+        }
+        if (block == Blocks.COBBLESTONE) {
+            return Blocks.SMOOTH_STONE;
         }
         if (block == Blocks.GRAVEL || block == Blocks.STONE) {
             if (profile == BiomePathProfiles.PathProfile.DAMP
