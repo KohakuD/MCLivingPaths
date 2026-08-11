@@ -118,7 +118,7 @@ The server-side implementation is designed so multiple players can contribute to
 - [x] Make protected blocks configurable while keeping Farmland protected by default
 - [x] Make entity traffic configurable
 - [x] Evaluate regeneration or overgrowth of rarely used established paths
-- [ ] Evaluate rare further development of extremely heavily used Cobblestone paths
+- [x] Evaluate rare further development of extremely heavily used Cobblestone paths
 - [ ] Provide sensible defaults so no configuration is required for normal use
 
 ## Towards 1.0.0
