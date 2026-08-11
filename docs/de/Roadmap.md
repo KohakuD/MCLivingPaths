@@ -101,7 +101,7 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
 - [x] Entitätsverkehr konfigurierbar machen
 - [x] Regeneration bzw. Überwachsen wenig genutzter etablierter Wege prüfen
-- [ ] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
+- [x] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
 - [ ] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
 
 ## Richtung 1.0.0
