@@ -80,19 +80,19 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 
 ## 0.4.0 – Entity Traffic
 
-- [ ] Ausgewählte Vanilla-Mobs und Tiere zum Verschleiss beitragen lassen
-- [ ] Entitätsbewegung effizient erfassen, ohne global alle Entitäten zu scannen
-- [ ] Unterschiedliche Gewichtung nach Entitätstyp und Grösse prüfen
-- [ ] Fahrzeuge/Passagiere nicht versehentlich doppelt zählen
-- [ ] Performance mit vielen Entitäten in der Nähe prüfen
+- [x] Ausgewählte bodengebundene Vanilla-Mobs zum Verschleiss beitragen lassen und Tiere standardmässig ausschliessen
+- [x] Entitätsbewegung effizient erfassen, ohne global alle Entitäten zu scannen
+- [x] Unterschiedliche Gewichtung nach Entitätstyp und Grösse prüfen
+- [x] Fahrzeuge/Passagiere nicht versehentlich doppelt zählen
+- [x] Performance mit vielen Entitäten in der Nähe prüfen
 
 ## 0.5.0 – MineColonies Integration
 
-- [ ] MineColonies Citizens erkennen, wenn MineColonies installiert ist
-- [ ] Citizens natürlich zum Living-Paths-Verschleiss beitragen lassen
-- [ ] MineColonies als optionale Integration statt harte Abhängigkeit umsetzen
-- [ ] Rollen-/Verkehrsgewichtung nur einführen, wenn sie natürlichere Wege erzeugt
-- [ ] Typische Kolonie-Routen wie Builder, Warehouse, Residence, Mine und Farm testen
+- [x] MineColonies Citizens erkennen, wenn MineColonies installiert ist
+- [x] Citizens natürlich zum Living-Paths-Verschleiss beitragen lassen
+- [x] MineColonies als optionale Integration statt harte Abhängigkeit umsetzen
+- [x] Rollen-/Verkehrsgewichtung nur einführen, wenn sie natürlichere Wege erzeugt
+- [x] Typische Kolonie-Routen wie Builder, Warehouse, Residence, Mine und Farm testen
 
 ## 0.6.0 – Configuration & Long-Term Behaviour
 
@@ -100,10 +100,11 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Wear-Decay konfigurierbar machen
 - [x] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
 - [x] Entitätsverkehr konfigurierbar machen
-- [ ] Tierverkehr optional konfigurierbar machen und standardmässig deaktivieren
+- [x] Tierverkehr optional konfigurierbar machen und standardmässig deaktivieren
+- [x] Ingame-Konfigurationsbildschirm mit deutscher und englischer Lokalisierung bereitstellen
 - [x] Regeneration bzw. Überwachsen wenig genutzter etablierter Wege prüfen
 - [x] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
-- [ ] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
+- [x] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
 
 ## Richtung 1.0.0
 
