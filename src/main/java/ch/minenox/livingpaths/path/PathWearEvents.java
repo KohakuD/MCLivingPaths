@@ -183,7 +183,7 @@ public final class PathWearEvents {
         }
 
         level.setBlockAndUpdate(pos, nextBlock.defaultBlockState());
-        data.clearWear(pos);
+        data.markEstablished(pos, level.getGameTime());
         return 0;
     }
 
