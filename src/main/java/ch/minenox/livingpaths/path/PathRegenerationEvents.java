@@ -44,7 +44,7 @@ public final class PathRegenerationEvents {
             }
 
             Block currentBlock = level.getBlockState(pos).getBlock();
-            Block previousBlock = previousBlockFor(currentBlock);
+            Block previousBlock = previousBlockFor(data, pos, currentBlock);
             if (previousBlock == null) {
                 data.clearWear(pos);
                 continue;
@@ -60,9 +60,9 @@ public final class PathRegenerationEvents {
         }
     }
 
-    private static Block previousBlockFor(Block block) {
+    private static Block previousBlockFor(PathWearData data, BlockPos pos, Block block) {
         if (block == Blocks.SMOOTH_STONE) {
-            return Blocks.COBBLESTONE;
+            return data.isSmoothStoneFromStone(pos) ? Blocks.STONE : Blocks.COBBLESTONE;
         }
         if (block == Blocks.COBBLESTONE) {
             return Blocks.GRAVEL;
