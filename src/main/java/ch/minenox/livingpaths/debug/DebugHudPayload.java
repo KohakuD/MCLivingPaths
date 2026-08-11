@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 public record DebugHudPayload(
         String profile,
         String position,
+        String entityTraffic,
         String left,
         String centre,
         String right
@@ -24,6 +25,8 @@ public record DebugHudPayload(
             DebugHudPayload::profile,
             ByteBufCodecs.STRING_UTF8,
             DebugHudPayload::position,
+            ByteBufCodecs.STRING_UTF8,
+            DebugHudPayload::entityTraffic,
             ByteBufCodecs.STRING_UTF8,
             DebugHudPayload::left,
             ByteBufCodecs.STRING_UTF8,
