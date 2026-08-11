@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.path;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.config.LivingPathsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -114,11 +115,17 @@ public final class EntityTrafficEvents {
     }
 
     private static boolean isSelectedTrafficMob(PathfinderMob mob) {
+        if (!LivingPathsConfig.ENTITY_TRAFFIC_ENABLED.get()) {
+            return false;
+        }
+
         ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
         if ("minecraft".equals(entityId.getNamespace())) {
-            return !(mob instanceof Animal);
+            return LivingPathsConfig.VANILLA_MOB_TRAFFIC_ENABLED.get()
+                    && !(mob instanceof Animal);
         }
-        return isMineColoniesCitizen(entityId);
+        return LivingPathsConfig.MINECOLONIES_CITIZEN_TRAFFIC_ENABLED.get()
+                && isMineColoniesCitizen(entityId);
     }
 
     private static boolean isMineColoniesCitizen(PathfinderMob mob) {
@@ -137,13 +144,17 @@ public final class EntityTrafficEvents {
     }
 
     private static int wearWeightFor(PathfinderMob mob) {
+        if (isMineColoniesCitizen(mob)) {
+            return LivingPathsConfig.MINECOLONIES_CITIZEN_WEIGHT.get();
+        }
+
         EntityType<?> type = mob.getType();
         if (type == EntityType.IRON_GOLEM
                 || type == EntityType.RAVAGER
                 || type == EntityType.WARDEN) {
-            return 2;
+            return LivingPathsConfig.HEAVY_ENTITY_WEIGHT.get();
         }
-        return 1;
+        return LivingPathsConfig.NORMAL_ENTITY_WEIGHT.get();
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
