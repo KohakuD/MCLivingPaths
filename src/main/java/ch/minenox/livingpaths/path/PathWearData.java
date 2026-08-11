@@ -1,5 +1,6 @@
 package ch.minenox.livingpaths.path;
 
+import ch.minenox.livingpaths.config.LivingPathsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +22,6 @@ public final class PathWearData extends SavedData {
     private static final String LAST_USED_KEY = "lastUsed";
 
     private static final long TICKS_PER_MINECRAFT_DAY = 24_000L;
-    private static final int WEAR_DECAY_PER_INACTIVE_DAY = 1;
     private static final long CLEANUP_INTERVAL_TICKS = TICKS_PER_MINECRAFT_DAY;
 
     private final Map<Long, WearEntry> wearByPosition = new HashMap<>();
@@ -180,9 +180,19 @@ public final class PathWearData extends SavedData {
     }
 
     private static long decaySince(WearEntry entry, long gameTime) {
+        if (!LivingPathsConfig.WEAR_DECAY_ENABLED.get()) {
+            return 0L;
+        }
+
         long inactiveTicks = Math.max(0L, gameTime - entry.lastUsedGameTime());
         long inactiveDays = inactiveTicks / TICKS_PER_MINECRAFT_DAY;
-        return inactiveDays * WEAR_DECAY_PER_INACTIVE_DAY;
+        long decaySteps = inactiveDays / LivingPathsConfig.WEAR_DECAY_INTERVAL_DAYS.get();
+        long decayAmount = LivingPathsConfig.WEAR_DECAY_AMOUNT.get();
+
+        if (decaySteps > Long.MAX_VALUE / decayAmount) {
+            return Long.MAX_VALUE;
+        }
+        return decaySteps * decayAmount;
     }
 
     private record WearEntry(int visits, int edgeVisits, long lastUsedGameTime) {
