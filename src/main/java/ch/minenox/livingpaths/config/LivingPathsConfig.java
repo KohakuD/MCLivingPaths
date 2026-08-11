@@ -18,6 +18,7 @@ public final class LivingPathsConfig {
     private static final int MAX_DECAY_AMOUNT = 1_000_000;
     private static final int MIN_ENTITY_WEIGHT = 1;
     private static final int MAX_ENTITY_WEIGHT = 1_000;
+    private static final int MAX_REGENERATION_INTERVAL_DAYS = 365_000;
 
     public static final ModConfigSpec.IntValue GRASS_THRESHOLD;
     public static final ModConfigSpec.IntValue MUD_THRESHOLD;
@@ -43,6 +44,9 @@ public final class LivingPathsConfig {
     public static final ModConfigSpec.IntValue NORMAL_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue HEAVY_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue MINECOLONIES_CITIZEN_WEIGHT;
+
+    public static final ModConfigSpec.BooleanValue REGENERATION_ENABLED;
+    public static final ModConfigSpec.IntValue REGENERATION_INTERVAL_DAYS;
 
     public static final ModConfigSpec SPEC;
 
@@ -132,6 +136,20 @@ public final class LivingPathsConfig {
                 "Wear points from Iron Golems, Ravagers and Wardens.");
         MINECOLONIES_CITIZEN_WEIGHT = entityWeight(builder, "citizen_weight", 1,
                 "Wear points from a MineColonies Citizen crossing.");
+
+        builder.pop();
+
+        builder.comment(
+                "Slow regeneration of established paths created by Living Paths.",
+                "Naturally occurring and player-placed blocks are never registered for regeneration."
+        ).push("regeneration");
+
+        REGENERATION_ENABLED = builder.comment(
+                "Whether unused established Living Paths gradually return towards natural ground."
+        ).define("enabled", true);
+        REGENERATION_INTERVAL_DAYS = builder.comment(
+                "Inactive Minecraft days between individual regeneration stages."
+        ).defineInRange("interval_days", 30, 1, MAX_REGENERATION_INTERVAL_DAYS);
 
         builder.pop();
         SPEC = builder.build();
