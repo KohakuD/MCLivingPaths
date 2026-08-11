@@ -116,8 +116,44 @@ public final class PathWearEvents {
             sideZ = -sideZ;
         }
 
-        BlockPos edgePos = currentStep.pos().offset(sideX, 0, sideZ);
-        addWear(level, edgePos, 1, true);
+        BlockPos edgeColumn = currentStep.pos().offset(sideX, 0, sideZ);
+        BlockPos edgePos = findWearableSurface(level, edgeColumn);
+        if (edgePos != null) {
+            addWear(level, edgePos, 1, true);
+        }
+    }
+
+    /**
+     * Finds the nearby walkable surface for organic edge wear. The neighbouring terrain may be on
+     * the same level, one block higher or one block lower than the directly travelled block.
+     */
+    public static BlockPos findWearableSurface(ServerLevel level, BlockPos referencePos) {
+        BlockPos sameLevel = referencePos.immutable();
+        if (isWearableExposedSurface(level, sameLevel)) {
+            return sameLevel;
+        }
+
+        BlockPos oneHigher = referencePos.above();
+        if (isWearableExposedSurface(level, oneHigher)) {
+            return oneHigher;
+        }
+
+        BlockPos oneLower = referencePos.below();
+        if (isWearableExposedSurface(level, oneLower)) {
+            return oneLower;
+        }
+
+        return null;
+    }
+
+    private static boolean isWearableExposedSurface(ServerLevel level, BlockPos pos) {
+        Block block = level.getBlockState(pos).getBlock();
+        if (thresholdFor(block) <= 0 || block == Blocks.FARMLAND) {
+            return false;
+        }
+
+        BlockPos above = pos.above();
+        return level.getBlockState(above).getCollisionShape(level, above).isEmpty();
     }
 
     public static int addWear(ServerLevel level, BlockPos pos, int amount) {
