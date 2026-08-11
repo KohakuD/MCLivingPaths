@@ -22,4 +22,13 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Upload mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: livingpaths-0.6.0
+          path: build/libs/livingpaths-0.6.0.jar
+          if-no-files-found: error
