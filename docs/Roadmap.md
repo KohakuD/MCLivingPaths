@@ -115,7 +115,7 @@ The server-side implementation is designed so multiple players can contribute to
 
 - [x] Make wear thresholds configurable
 - [x] Make wear decay configurable
-- [ ] Make protected blocks configurable while keeping Farmland protected by default
+- [x] Make protected blocks configurable while keeping Farmland protected by default
 - [ ] Make entity traffic configurable
 - [ ] Evaluate regeneration or overgrowth of rarely used established paths
 - [ ] Evaluate rare further development of extremely heavily used Cobblestone paths
