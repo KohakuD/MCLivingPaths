@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,6 +22,7 @@ import java.util.UUID;
  *
  * <p>The entity tick event supplies only the entity that already ticked. Tracking its last ground
  * position lets us count real block-to-block movement while keeping stationary mobs free of wear.
+ * Animals are deliberately excluded so livestock enclosures keep their natural ground.
  */
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class EntityTrafficEvents {
@@ -60,7 +62,8 @@ public final class EntityTrafficEvents {
     }
 
     private static boolean isSelectedVanillaMob(PathfinderMob mob) {
-        return "minecraft".equals(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).getNamespace());
+        return !(mob instanceof Animal)
+                && "minecraft".equals(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).getNamespace());
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
