@@ -23,9 +23,17 @@ public final class PlayerPathModificationEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
-        if (event.getEntity() instanceof Player
-                && event.getLevel() instanceof ServerLevel level) {
-            PathWearData.get(level).clearWear(event.getPos());
+        if (!(event.getEntity() instanceof Player)
+                || !(event.getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+
+        PathWearData data = PathWearData.get(level);
+        if (event instanceof BlockEvent.EntityMultiPlaceEvent multiPlaceEvent) {
+            multiPlaceEvent.getReplacedBlockSnapshots()
+                    .forEach(snapshot -> data.clearWear(snapshot.getPos()));
+        } else {
+            data.clearWear(event.getPos());
         }
     }
 }
