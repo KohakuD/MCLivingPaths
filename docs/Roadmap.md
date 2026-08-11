@@ -113,7 +113,7 @@ The server-side implementation is designed so multiple players can contribute to
 
 ## 0.6.0 – Configuration & Long-Term Behaviour
 
-- [ ] Make wear thresholds configurable
+- [x] Make wear thresholds configurable
 - [ ] Make wear decay configurable
 - [ ] Make protected blocks configurable while keeping Farmland protected by default
 - [ ] Make entity traffic configurable
