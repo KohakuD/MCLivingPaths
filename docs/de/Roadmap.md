@@ -99,7 +99,7 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Verschleiss-Schwellen konfigurierbar machen
 - [x] Wear-Decay konfigurierbar machen
 - [x] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
-- [ ] Entitätsverkehr konfigurierbar machen
+- [x] Entitätsverkehr konfigurierbar machen
 - [ ] Regeneration bzw. Überwachsen wenig genutzter etablierter Wege prüfen
 - [ ] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
 - [ ] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
