@@ -1,9 +1,11 @@
 package ch.minenox.livingpaths.path;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.debug.DebugHudSync;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -53,6 +55,10 @@ public final class PathWearEvents {
         }
         if (!player.onGround() || player.isSpectator() || player.isPassenger()) {
             return;
+        }
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            DebugHudSync.sendIfDue(level, serverPlayer);
         }
 
         BlockPos groundPos = player.getOnPos().immutable();
