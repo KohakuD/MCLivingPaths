@@ -16,6 +16,8 @@ public final class LivingPathsConfig {
     private static final int MAX_THRESHOLD = 1_000_000;
     private static final int MAX_DECAY_INTERVAL_DAYS = 365_000;
     private static final int MAX_DECAY_AMOUNT = 1_000_000;
+    private static final int MIN_ENTITY_WEIGHT = 1;
+    private static final int MAX_ENTITY_WEIGHT = 1_000;
 
     public static final ModConfigSpec.IntValue GRASS_THRESHOLD;
     public static final ModConfigSpec.IntValue MUD_THRESHOLD;
@@ -34,6 +36,13 @@ public final class LivingPathsConfig {
     public static final ModConfigSpec.IntValue WEAR_DECAY_AMOUNT;
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> PROTECTED_BLOCKS;
+
+    public static final ModConfigSpec.BooleanValue ENTITY_TRAFFIC_ENABLED;
+    public static final ModConfigSpec.BooleanValue VANILLA_MOB_TRAFFIC_ENABLED;
+    public static final ModConfigSpec.BooleanValue MINECOLONIES_CITIZEN_TRAFFIC_ENABLED;
+    public static final ModConfigSpec.IntValue NORMAL_ENTITY_WEIGHT;
+    public static final ModConfigSpec.IntValue HEAVY_ENTITY_WEIGHT;
+    public static final ModConfigSpec.IntValue MINECOLONIES_CITIZEN_WEIGHT;
 
     public static final ModConfigSpec SPEC;
 
@@ -102,10 +111,43 @@ public final class LivingPathsConfig {
         );
 
         builder.pop();
+
+        builder.comment(
+                "Traffic from non-player entities.",
+                "Animals remain excluded so enclosures and grazing areas do not become paths."
+        ).push("entity_traffic");
+
+        ENTITY_TRAFFIC_ENABLED = builder.comment(
+                "Master switch for all entity traffic wear."
+        ).define("enabled", true);
+        VANILLA_MOB_TRAFFIC_ENABLED = builder.comment(
+                "Whether selected ground-based vanilla non-animal mobs contribute to wear."
+        ).define("vanilla_mobs", true);
+        MINECOLONIES_CITIZEN_TRAFFIC_ENABLED = builder.comment(
+                "Whether MineColonies Citizens contribute to wear when MineColonies is installed."
+        ).define("minecolonies_citizens", true);
+        NORMAL_ENTITY_WEIGHT = entityWeight(builder, "normal_weight", 1,
+                "Wear points from a normal vanilla mob crossing.");
+        HEAVY_ENTITY_WEIGHT = entityWeight(builder, "heavy_weight", 2,
+                "Wear points from Iron Golems, Ravagers and Wardens.");
+        MINECOLONIES_CITIZEN_WEIGHT = entityWeight(builder, "citizen_weight", 1,
+                "Wear points from a MineColonies Citizen crossing.");
+
+        builder.pop();
         SPEC = builder.build();
     }
 
     private LivingPathsConfig() {
+    }
+
+    private static ModConfigSpec.IntValue entityWeight(
+            ModConfigSpec.Builder builder,
+            String name,
+            int defaultValue,
+            String comment
+    ) {
+        return builder.comment(comment)
+                .defineInRange(name, defaultValue, MIN_ENTITY_WEIGHT, MAX_ENTITY_WEIGHT);
     }
 
     private static ModConfigSpec.IntValue threshold(
