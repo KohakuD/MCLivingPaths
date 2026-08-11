@@ -39,18 +39,22 @@ public final class DebugHudOverlay {
         String title = "Living Paths Debug HUD";
         String profile = "Profile: " + snapshot.profile();
         String position = "Position: " + snapshot.position();
+        String entityTraffic = "Entity traffic: " + snapshot.entityTraffic();
         String left = "Left:   " + snapshot.left();
         String centre = "Centre: " + snapshot.centre();
         String right = "Right:  " + snapshot.right();
 
         int width = Math.max(
-                Math.max(font.width(title), font.width(profile)),
                 Math.max(
-                        Math.max(font.width(position), font.width(left)),
-                        Math.max(font.width(centre), font.width(right))
+                        Math.max(font.width(title), font.width(profile)),
+                        Math.max(font.width(position), font.width(entityTraffic))
+                ),
+                Math.max(
+                        Math.max(font.width(left), font.width(centre)),
+                        font.width(right)
                 )
         ) + PADDING * 2;
-        int height = PADDING * 2 + LINE_HEIGHT * 6;
+        int height = PADDING * 2 + LINE_HEIGHT * 7;
         int x = 6;
         int y = 6;
 
@@ -61,8 +65,9 @@ public final class DebugHudOverlay {
         graphics.drawString(font, title, textX, textY, TITLE, true);
         graphics.drawString(font, profile, textX, textY + LINE_HEIGHT, TEXT, true);
         graphics.drawString(font, position, textX, textY + LINE_HEIGHT * 2, MUTED, true);
-        graphics.drawString(font, left, textX, textY + LINE_HEIGHT * 3, TEXT, true);
-        graphics.drawString(font, centre, textX, textY + LINE_HEIGHT * 4, TEXT, true);
-        graphics.drawString(font, right, textX, textY + LINE_HEIGHT * 5, TEXT, true);
+        graphics.drawString(font, entityTraffic, textX, textY + LINE_HEIGHT * 3, MUTED, true);
+        graphics.drawString(font, left, textX, textY + LINE_HEIGHT * 4, TEXT, true);
+        graphics.drawString(font, centre, textX, textY + LINE_HEIGHT * 5, TEXT, true);
+        graphics.drawString(font, right, textX, textY + LINE_HEIGHT * 6, TEXT, true);
     }
 }
