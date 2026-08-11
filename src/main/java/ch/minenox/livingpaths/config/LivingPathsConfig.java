@@ -82,7 +82,7 @@ public final class LivingPathsConfig {
         STONE_THRESHOLD = threshold(builder, "stone", 500,
                 "Stone -> Smooth Stone.");
         COBBLESTONE_THRESHOLD = threshold(builder, "cobblestone", 1_000,
-                "Established Cobblestone created by Living Paths -> Smooth Stone.");
+                "Established Cobblestone created by Living Paths -> Stone.");
 
         builder.pop();
 
