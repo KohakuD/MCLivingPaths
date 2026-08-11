@@ -80,7 +80,7 @@ public final class LivingPathsConfig {
         GRAVEL_THRESHOLD = threshold(builder, "gravel", 200,
                 "Gravel -> Cobblestone or Mossy Cobblestone.");
         STONE_THRESHOLD = threshold(builder, "stone", 500,
-                "Stone -> Cobblestone or Mossy Cobblestone.");
+                "Stone -> Smooth Stone.");
         COBBLESTONE_THRESHOLD = threshold(builder, "cobblestone", 1_000,
                 "Established Cobblestone created by Living Paths -> Smooth Stone.");
 
