@@ -67,6 +67,12 @@ public final class EntityTrafficEvents {
 
         int wearWeight = wearWeightFor(mob);
         PathWearEvents.addWear(level, groundPos, wearWeight);
+        PathWearEvents.addOrganicEdgeWear(
+                level,
+                previousStep.pos(),
+                currentStep.pos(),
+                wearWeight
+        );
         countedCrossings++;
         appliedWear += wearWeight;
     }
