@@ -27,8 +27,9 @@ import java.util.UUID;
  *
  * <p>The entity tick event supplies only the entity that already ticked. Tracking its last ground
  * position lets us count real block-to-block movement while keeping stationary mobs free of wear.
- * Vanilla animals are deliberately excluded so livestock enclosures keep their natural ground.
- * MineColonies Citizens are detected by their registered entity id, keeping MineColonies optional.
+ * Vanilla animals are excluded by default so livestock enclosures keep their natural ground, but
+ * can be enabled explicitly in the common configuration. MineColonies Citizens are detected by
+ * their registered entity id, keeping MineColonies optional.
  */
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class EntityTrafficEvents {
@@ -121,8 +122,10 @@ public final class EntityTrafficEvents {
 
         ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
         if ("minecraft".equals(entityId.getNamespace())) {
-            return LivingPathsConfig.VANILLA_MOB_TRAFFIC_ENABLED.get()
-                    && !(mob instanceof Animal);
+            if (mob instanceof Animal) {
+                return LivingPathsConfig.ANIMAL_TRAFFIC_ENABLED.get();
+            }
+            return LivingPathsConfig.VANILLA_MOB_TRAFFIC_ENABLED.get();
         }
         return LivingPathsConfig.MINECOLONIES_CITIZEN_TRAFFIC_ENABLED.get()
                 && isMineColoniesCitizen(entityId);
@@ -146,6 +149,9 @@ public final class EntityTrafficEvents {
     private static int wearWeightFor(PathfinderMob mob) {
         if (isMineColoniesCitizen(mob)) {
             return LivingPathsConfig.MINECOLONIES_CITIZEN_WEIGHT.get();
+        }
+        if (mob instanceof Animal) {
+            return LivingPathsConfig.ANIMAL_ENTITY_WEIGHT.get();
         }
 
         EntityType<?> type = mob.getType();
