@@ -29,6 +29,8 @@ import java.util.UUID;
 public final class EntityTrafficEvents {
 
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
+    private static long countedCrossings;
+    private static long appliedWear;
 
     private EntityTrafficEvents() {
     }
@@ -59,12 +61,24 @@ public final class EntityTrafficEvents {
             return;
         }
 
-        PathWearEvents.addWear(level, groundPos, wearWeightFor(mob));
+        int wearWeight = wearWeightFor(mob);
+        PathWearEvents.addWear(level, groundPos, wearWeight);
+        countedCrossings++;
+        appliedWear += wearWeight;
     }
 
     @SubscribeEvent
     public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
         LAST_STEP.remove(event.getEntity().getUUID());
+    }
+
+    public static String debugSummary() {
+        return LAST_STEP.size()
+                + " tracked | "
+                + countedCrossings
+                + " crossings | "
+                + appliedWear
+                + " wear";
     }
 
     private static boolean isSelectedVanillaMob(PathfinderMob mob) {
