@@ -80,11 +80,20 @@ The server-side implementation is designed so multiple players can contribute to
 
 ## 0.4.0 – Entity Traffic
 
-- [ ] Allow selected vanilla mobs and animals to contribute to wear
-- [ ] Track entity movement efficiently without scanning every entity globally
-- [ ] Evaluate different wear weights by entity type and size
-- [ ] Keep vehicles/passengers from accidentally double-counting traffic
-- [ ] Validate performance with many nearby entities
+- [x] Allow selected ground-based vanilla mobs to contribute to wear while excluding animals
+- [x] Track entity movement efficiently without scanning every entity globally
+- [x] Evaluate different wear weights by entity type and size
+- [x] Keep vehicles/passengers from accidentally double-counting traffic
+- [x] Validate performance with many nearby entities
+
+### Current entity-traffic behaviour
+
+- Villagers, Wandering Traders and other ground-based vanilla non-animal mobs contribute to path wear.
+- Animals are excluded so enclosures and grazing areas do not turn into paths.
+- Normal mobs contribute one wear point per valid ground-block crossing.
+- Iron Golems, Ravagers and Wardens contribute two wear points per valid crossing.
+- Still entities, passengers, vehicles, teleports and large position jumps do not create artificial wear.
+- Entity traffic was validated with the debug HUD; tracked entity counts remained stable and wear stopped when mob AI was disabled.
 
 ## 0.5.0 – MineColonies Integration
 
