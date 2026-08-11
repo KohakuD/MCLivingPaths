@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.path.BiomePathProfiles;
+import ch.minenox.livingpaths.path.EntityTrafficEvents;
 import ch.minenox.livingpaths.path.PathWearEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +33,7 @@ public final class DebugHudSync {
         PacketDistributor.sendToPlayer(player, new DebugHudPayload(
                 profile,
                 centre.getX() + " " + centre.getY() + " " + centre.getZ() + " | facing " + forward.getName(),
+                EntityTrafficEvents.debugSummary(),
                 describe(level, left),
                 describe(level, centre),
                 describe(level, right)
