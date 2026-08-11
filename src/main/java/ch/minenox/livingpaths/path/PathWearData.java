@@ -137,6 +137,11 @@ public final class PathWearData extends SavedData {
         return Math.min(effectiveWear, effectiveEdgeWear(entry, gameTime));
     }
 
+    public boolean isEstablished(BlockPos pos) {
+        WearEntry entry = wearByPosition.get(pos.asLong());
+        return entry != null && entry.established();
+    }
+
     public void clearWear(BlockPos pos) {
         if (wearByPosition.remove(pos.asLong()) != null) {
             setDirty();
