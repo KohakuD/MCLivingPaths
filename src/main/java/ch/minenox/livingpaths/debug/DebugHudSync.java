@@ -23,8 +23,10 @@ public final class DebugHudSync {
 
         BlockPos centre = player.getOnPos().immutable();
         Direction forward = player.getDirection();
-        BlockPos left = centre.relative(forward.getCounterClockWise());
-        BlockPos right = centre.relative(forward.getClockWise());
+        BlockPos leftColumn = centre.relative(forward.getCounterClockWise());
+        BlockPos rightColumn = centre.relative(forward.getClockWise());
+        BlockPos left = surfaceOrColumn(level, leftColumn);
+        BlockPos right = surfaceOrColumn(level, rightColumn);
         String profile = BiomePathProfiles.profileFor(level, centre).name();
 
         PacketDistributor.sendToPlayer(player, new DebugHudPayload(
@@ -36,6 +38,11 @@ public final class DebugHudSync {
         ));
     }
 
+    private static BlockPos surfaceOrColumn(ServerLevel level, BlockPos referencePos) {
+        BlockPos surface = PathWearEvents.findWearableSurface(level, referencePos);
+        return surface != null ? surface : referencePos;
+    }
+
     private static String describe(ServerLevel level, BlockPos pos) {
         var block = level.getBlockState(pos).getBlock();
         String blockName = BuiltInRegistries.BLOCK.getKey(block).toString();
@@ -43,7 +50,8 @@ public final class DebugHudSync {
         int edgeWear = PathWearEvents.getEdgeWear(level, pos);
         int threshold = PathWearEvents.getThreshold(level, pos);
 
-        return blockName
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ()
+                + " | " + blockName
                 + " | wear " + wear + "/" + threshold
                 + " | edge " + edgeWear;
     }
