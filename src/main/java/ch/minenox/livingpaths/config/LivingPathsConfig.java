@@ -1,6 +1,9 @@
 package ch.minenox.livingpaths.config;
 
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
+
+import java.util.List;
 
 /**
  * Common server-side configuration for Living Paths.
@@ -29,6 +32,8 @@ public final class LivingPathsConfig {
     public static final ModConfigSpec.BooleanValue WEAR_DECAY_ENABLED;
     public static final ModConfigSpec.IntValue WEAR_DECAY_INTERVAL_DAYS;
     public static final ModConfigSpec.IntValue WEAR_DECAY_AMOUNT;
+
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> PROTECTED_BLOCKS;
 
     public static final ModConfigSpec SPEC;
 
@@ -79,6 +84,22 @@ public final class LivingPathsConfig {
         WEAR_DECAY_AMOUNT = builder.comment(
                 "Wear points removed at each decay step."
         ).defineInRange("amount", 1, 1, MAX_DECAY_AMOUNT);
+
+        builder.pop();
+
+        builder.comment(
+                "Blocks that Living Paths must never wear or replace.",
+                "Use namespaced block IDs such as minecraft:farmland or anothermod:block_name."
+        ).push("protected_blocks");
+
+        PROTECTED_BLOCKS = builder.comment(
+                "Protected block IDs. Farmland is protected by default."
+        ).defineListAllowEmpty(
+                "blocks",
+                List.of("minecraft:farmland"),
+                () -> "minecraft:farmland",
+                value -> value instanceof String id && ResourceLocation.tryParse(id) != null
+        );
 
         builder.pop();
         SPEC = builder.build();
