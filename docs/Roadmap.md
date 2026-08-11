@@ -64,7 +64,7 @@ The server-side implementation is designed so multiple players can contribute to
 - [x] Allow Moss to develop more often along lightly travelled edges
 - [x] Create natural-looking path widths instead of single uniform block lines
 - [x] Introduce controlled variation so neighbouring path blocks do not always match
-- [ ] Keep path generation deterministic enough to avoid visual flicker or repeated rerolls
+- [x] Keep path generation deterministic enough to avoid visual flicker or repeated rerolls
 
 ### Current organic-path behaviour
 
@@ -75,6 +75,8 @@ The server-side implementation is designed so multiple players can contribute to
 - Large position jumps and teleports do not create edge wear.
 - Edge-dominated wear can favour Moss and Mossy Cobblestone in damp biomes.
 - Edge wear uses the same protected-block and biome-aware progression rules as direct wear.
+- Adjacent walkable surfaces one block above or below the path can receive shoulder wear.
+- Wear, edge-wear values and shoulder placement were validated across world reloads and remained stable.
 
 ## 0.4.0 – Entity Traffic
 
