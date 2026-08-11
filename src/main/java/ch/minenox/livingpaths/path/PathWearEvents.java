@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.path;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.config.LivingPathsConfig;
 import ch.minenox.livingpaths.debug.DebugHudSync;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -21,18 +22,6 @@ import java.util.UUID;
 
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class PathWearEvents {
-
-    private static final int GRASS_THRESHOLD = 25;
-    private static final int MUD_THRESHOLD = 50;
-    private static final int PACKED_MUD_THRESHOLD = 75;
-    private static final int PODZOL_THRESHOLD = 75;
-    private static final int MYCELIUM_THRESHOLD = 75;
-    private static final int DIRT_PATH_THRESHOLD = 50;
-    private static final int MOSS_THRESHOLD = 75;
-    private static final int ROOTED_DIRT_THRESHOLD = 75;
-    private static final int COARSE_DIRT_THRESHOLD = 100;
-    private static final int GRAVEL_THRESHOLD = 200;
-    private static final int STONE_THRESHOLD = 500;
 
     /**
      * Two out of five travelled positions contribute wear to a neighbouring shoulder.
@@ -212,37 +201,37 @@ public final class PathWearEvents {
 
     private static int thresholdFor(Block block) {
         if (block == Blocks.GRASS_BLOCK) {
-            return GRASS_THRESHOLD;
+            return LivingPathsConfig.GRASS_THRESHOLD.get();
         }
         if (block == Blocks.MUD) {
-            return MUD_THRESHOLD;
+            return LivingPathsConfig.MUD_THRESHOLD.get();
         }
         if (block == Blocks.PACKED_MUD) {
-            return PACKED_MUD_THRESHOLD;
+            return LivingPathsConfig.PACKED_MUD_THRESHOLD.get();
         }
         if (block == Blocks.PODZOL) {
-            return PODZOL_THRESHOLD;
+            return LivingPathsConfig.PODZOL_THRESHOLD.get();
         }
         if (block == Blocks.MYCELIUM) {
-            return MYCELIUM_THRESHOLD;
+            return LivingPathsConfig.MYCELIUM_THRESHOLD.get();
         }
         if (block == Blocks.DIRT_PATH) {
-            return DIRT_PATH_THRESHOLD;
+            return LivingPathsConfig.DIRT_PATH_THRESHOLD.get();
         }
         if (block == Blocks.MOSS_BLOCK) {
-            return MOSS_THRESHOLD;
+            return LivingPathsConfig.MOSS_THRESHOLD.get();
         }
         if (block == Blocks.ROOTED_DIRT) {
-            return ROOTED_DIRT_THRESHOLD;
+            return LivingPathsConfig.ROOTED_DIRT_THRESHOLD.get();
         }
         if (block == Blocks.COARSE_DIRT) {
-            return COARSE_DIRT_THRESHOLD;
+            return LivingPathsConfig.COARSE_DIRT_THRESHOLD.get();
         }
         if (block == Blocks.GRAVEL) {
-            return GRAVEL_THRESHOLD;
+            return LivingPathsConfig.GRAVEL_THRESHOLD.get();
         }
         if (block == Blocks.STONE) {
-            return STONE_THRESHOLD;
+            return LivingPathsConfig.STONE_THRESHOLD.get();
         }
         return -1;
     }
