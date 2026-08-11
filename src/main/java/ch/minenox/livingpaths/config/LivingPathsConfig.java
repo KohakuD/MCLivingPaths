@@ -57,7 +57,8 @@ public final class LivingPathsConfig {
         builder.comment(
                 "Wear thresholds in ground-block crossings.",
                 "Each value is the additional traffic required while a block is in that stage."
-        ).push("wear_thresholds");
+        ).translation("config.livingpaths.section.wear_thresholds")
+                .push("wear_thresholds");
 
         GRASS_THRESHOLD = threshold(builder, "grass_block", 25,
                 "Grass Block -> Dirt Path or the biome-specific alternative.");
@@ -89,28 +90,34 @@ public final class LivingPathsConfig {
         builder.comment(
                 "Decay of stored wear after a position has not received traffic.",
                 "One Minecraft day contains 24000 game ticks."
-        ).push("wear_decay");
+        ).translation("config.livingpaths.section.wear_decay")
+                .push("wear_decay");
 
         WEAR_DECAY_ENABLED = builder.comment(
                 "Whether unused stored wear gradually decreases."
-        ).define("enabled", true);
+        ).translation("config.livingpaths.wear_decay.enabled")
+                .define("enabled", true);
         WEAR_DECAY_INTERVAL_DAYS = builder.comment(
                 "Number of inactive Minecraft days between decay steps."
-        ).defineInRange("interval_days", 1, 1, MAX_DECAY_INTERVAL_DAYS);
+        ).translation("config.livingpaths.wear_decay.interval_days")
+                .defineInRange("interval_days", 1, 1, MAX_DECAY_INTERVAL_DAYS);
         WEAR_DECAY_AMOUNT = builder.comment(
                 "Wear points removed at each decay step."
-        ).defineInRange("amount", 1, 1, MAX_DECAY_AMOUNT);
+        ).translation("config.livingpaths.wear_decay.amount")
+                .defineInRange("amount", 1, 1, MAX_DECAY_AMOUNT);
 
         builder.pop();
 
         builder.comment(
                 "Blocks that Living Paths must never wear or replace.",
                 "Use namespaced block IDs such as minecraft:farmland or anothermod:block_name."
-        ).push("protected_blocks");
+        ).translation("config.livingpaths.section.protected_blocks")
+                .push("protected_blocks");
 
         PROTECTED_BLOCKS = builder.comment(
                 "Protected block IDs. Farmland is protected by default."
-        ).defineListAllowEmpty(
+        ).translation("config.livingpaths.protected_blocks.blocks")
+                .defineListAllowEmpty(
                 "blocks",
                 List.of("minecraft:farmland"),
                 () -> "minecraft:farmland",
@@ -122,17 +129,21 @@ public final class LivingPathsConfig {
         builder.comment(
                 "Traffic from non-player entities.",
                 "Animals remain excluded so enclosures and grazing areas do not become paths."
-        ).push("entity_traffic");
+        ).translation("config.livingpaths.section.entity_traffic")
+                .push("entity_traffic");
 
         ENTITY_TRAFFIC_ENABLED = builder.comment(
                 "Master switch for all entity traffic wear."
-        ).define("enabled", true);
+        ).translation("config.livingpaths.entity_traffic.enabled")
+                .define("enabled", true);
         VANILLA_MOB_TRAFFIC_ENABLED = builder.comment(
                 "Whether selected ground-based vanilla non-animal mobs contribute to wear."
-        ).define("vanilla_mobs", true);
+        ).translation("config.livingpaths.entity_traffic.vanilla_mobs")
+                .define("vanilla_mobs", true);
         MINECOLONIES_CITIZEN_TRAFFIC_ENABLED = builder.comment(
                 "Whether MineColonies Citizens contribute to wear when MineColonies is installed."
-        ).define("minecolonies_citizens", true);
+        ).translation("config.livingpaths.entity_traffic.minecolonies_citizens")
+                .define("minecolonies_citizens", true);
         NORMAL_ENTITY_WEIGHT = entityWeight(builder, "normal_weight", 1,
                 "Wear points from a normal vanilla mob crossing.");
         HEAVY_ENTITY_WEIGHT = entityWeight(builder, "heavy_weight", 2,
@@ -145,14 +156,17 @@ public final class LivingPathsConfig {
         builder.comment(
                 "Slow regeneration of established paths created by Living Paths.",
                 "Naturally occurring and player-placed blocks are never registered for regeneration."
-        ).push("regeneration");
+        ).translation("config.livingpaths.section.regeneration")
+                .push("regeneration");
 
         REGENERATION_ENABLED = builder.comment(
                 "Whether unused established Living Paths gradually return towards natural ground."
-        ).define("enabled", true);
+        ).translation("config.livingpaths.regeneration.enabled")
+                .define("enabled", true);
         REGENERATION_INTERVAL_DAYS = builder.comment(
                 "Inactive Minecraft days between individual regeneration stages."
-        ).defineInRange("interval_days", 30, 1, MAX_REGENERATION_INTERVAL_DAYS);
+        ).translation("config.livingpaths.regeneration.interval_days")
+                .defineInRange("interval_days", 30, 1, MAX_REGENERATION_INTERVAL_DAYS);
 
         builder.pop();
         SPEC = builder.build();
@@ -168,6 +182,7 @@ public final class LivingPathsConfig {
             String comment
     ) {
         return builder.comment(comment)
+                .translation("config.livingpaths.entity_traffic." + name)
                 .defineInRange(name, defaultValue, MIN_ENTITY_WEIGHT, MAX_ENTITY_WEIGHT);
     }
 
@@ -178,6 +193,7 @@ public final class LivingPathsConfig {
             String comment
     ) {
         return builder.comment(comment)
+                .translation("config.livingpaths.wear_thresholds." + name)
                 .defineInRange(name, defaultValue, MIN_THRESHOLD, MAX_THRESHOLD);
     }
 }
