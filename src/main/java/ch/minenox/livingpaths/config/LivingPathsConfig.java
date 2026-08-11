@@ -41,9 +41,11 @@ public final class LivingPathsConfig {
 
     public static final ModConfigSpec.BooleanValue ENTITY_TRAFFIC_ENABLED;
     public static final ModConfigSpec.BooleanValue VANILLA_MOB_TRAFFIC_ENABLED;
+    public static final ModConfigSpec.BooleanValue ANIMAL_TRAFFIC_ENABLED;
     public static final ModConfigSpec.BooleanValue MINECOLONIES_CITIZEN_TRAFFIC_ENABLED;
     public static final ModConfigSpec.IntValue NORMAL_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue HEAVY_ENTITY_WEIGHT;
+    public static final ModConfigSpec.IntValue ANIMAL_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue MINECOLONIES_CITIZEN_WEIGHT;
 
     public static final ModConfigSpec.BooleanValue REGENERATION_ENABLED;
@@ -128,7 +130,7 @@ public final class LivingPathsConfig {
 
         builder.comment(
                 "Traffic from non-player entities.",
-                "Animals remain excluded so enclosures and grazing areas do not become paths."
+                "Animal traffic is optional and disabled by default so enclosures and grazing areas do not become paths."
         ).translation("config.livingpaths.section.entity_traffic")
                 .push("entity_traffic");
 
@@ -140,6 +142,10 @@ public final class LivingPathsConfig {
                 "Whether selected ground-based vanilla non-animal mobs contribute to wear."
         ).translation("config.livingpaths.entity_traffic.vanilla_mobs")
                 .define("vanilla_mobs", true);
+        ANIMAL_TRAFFIC_ENABLED = builder.comment(
+                "Whether vanilla animals contribute to wear. Warning: enabling this can quickly create paths in enclosures."
+        ).translation("config.livingpaths.entity_traffic.animals")
+                .define("animals", false);
         MINECOLONIES_CITIZEN_TRAFFIC_ENABLED = builder.comment(
                 "Whether MineColonies Citizens contribute to wear when MineColonies is installed."
         ).translation("config.livingpaths.entity_traffic.minecolonies_citizens")
@@ -148,6 +154,8 @@ public final class LivingPathsConfig {
                 "Wear points from a normal vanilla mob crossing.");
         HEAVY_ENTITY_WEIGHT = entityWeight(builder, "heavy_weight", 2,
                 "Wear points from Iron Golems, Ravagers and Wardens.");
+        ANIMAL_ENTITY_WEIGHT = entityWeight(builder, "animal_weight", 1,
+                "Wear points from an animal crossing when animal traffic is enabled.");
         MINECOLONIES_CITIZEN_WEIGHT = entityWeight(builder, "citizen_weight", 1,
                 "Wear points from a MineColonies Citizen crossing.");
 
