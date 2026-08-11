@@ -194,11 +194,11 @@ public final class PathWearEvents {
         }
 
         level.setBlockAndUpdate(pos, nextBlock.defaultBlockState());
-        data.markEstablished(
-                pos,
-                level.getGameTime(),
-                block == Blocks.STONE && nextBlock == Blocks.SMOOTH_STONE
-        );
+        if (block == Blocks.COBBLESTONE && nextBlock == Blocks.STONE) {
+            data.markEstablished(pos, level.getGameTime(), true);
+        } else {
+            data.markEstablished(pos, level.getGameTime());
+        }
         return 0;
     }
 
@@ -302,7 +302,10 @@ public final class PathWearEvents {
         if (block == Blocks.COARSE_DIRT) {
             return Blocks.GRAVEL;
         }
-        if (block == Blocks.STONE || block == Blocks.COBBLESTONE) {
+        if (block == Blocks.COBBLESTONE) {
+            return Blocks.STONE;
+        }
+        if (block == Blocks.STONE) {
             return Blocks.SMOOTH_STONE;
         }
         if (block == Blocks.GRAVEL) {
