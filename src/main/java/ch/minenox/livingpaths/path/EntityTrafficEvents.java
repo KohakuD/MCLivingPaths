@@ -16,7 +16,9 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -33,8 +35,10 @@ public final class EntityTrafficEvents {
     private static final String MINECOLONIES_NAMESPACE = "minecolonies";
     private static final String MINECOLONIES_CITIZEN_PATH = "citizen";
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
+    private static final Set<UUID> TRACKED_CITIZENS = new HashSet<>();
     private static long countedCrossings;
     private static long appliedWear;
+    private static long citizenCrossings;
 
     private EntityTrafficEvents() {
     }
@@ -46,17 +50,26 @@ public final class EntityTrafficEvents {
             return;
         }
 
+        UUID mobId = mob.getUUID();
+        boolean mineColoniesCitizen = isMineColoniesCitizen(mob);
         if (!isSelectedTrafficMob(mob)
                 || !mob.isAlive()
                 || !mob.onGround()
                 || mob.isPassenger()) {
-            LAST_STEP.remove(mob.getUUID());
+            LAST_STEP.remove(mobId);
+            TRACKED_CITIZENS.remove(mobId);
             return;
+        }
+
+        if (mineColoniesCitizen) {
+            TRACKED_CITIZENS.add(mobId);
+        } else {
+            TRACKED_CITIZENS.remove(mobId);
         }
 
         BlockPos groundPos = mob.getOnPos().immutable();
         StepLocation currentStep = new StepLocation(level.dimension(), groundPos);
-        StepLocation previousStep = LAST_STEP.put(mob.getUUID(), currentStep);
+        StepLocation previousStep = LAST_STEP.put(mobId, currentStep);
 
         if (previousStep == null
                 || previousStep.dimension() != currentStep.dimension()
@@ -75,11 +88,16 @@ public final class EntityTrafficEvents {
         );
         countedCrossings++;
         appliedWear += wearWeight;
+        if (mineColoniesCitizen) {
+            citizenCrossings++;
+        }
     }
 
     @SubscribeEvent
     public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
-        LAST_STEP.remove(event.getEntity().getUUID());
+        UUID entityId = event.getEntity().getUUID();
+        LAST_STEP.remove(entityId);
+        TRACKED_CITIZENS.remove(entityId);
     }
 
     public static String debugSummary() {
@@ -88,7 +106,11 @@ public final class EntityTrafficEvents {
                 + countedCrossings
                 + " crossings | "
                 + appliedWear
-                + " wear";
+                + " wear | "
+                + TRACKED_CITIZENS.size()
+                + " citizens | "
+                + citizenCrossings
+                + " citizen crossings";
     }
 
     private static boolean isSelectedTrafficMob(PathfinderMob mob) {
@@ -96,6 +118,14 @@ public final class EntityTrafficEvents {
         if ("minecraft".equals(entityId.getNamespace())) {
             return !(mob instanceof Animal);
         }
+        return isMineColoniesCitizen(entityId);
+    }
+
+    private static boolean isMineColoniesCitizen(PathfinderMob mob) {
+        return isMineColoniesCitizen(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
+    }
+
+    private static boolean isMineColoniesCitizen(ResourceLocation entityId) {
         return MINECOLONIES_NAMESPACE.equals(entityId.getNamespace())
                 && MINECOLONIES_CITIZEN_PATH.equals(entityId.getPath());
     }
