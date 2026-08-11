@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
@@ -35,11 +36,15 @@ public final class EntityTrafficEvents {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         if (!(event.getEntity() instanceof PathfinderMob mob)
-                || !(mob.level() instanceof ServerLevel level)
-                || !isSelectedVanillaMob(mob)
+                || !(mob.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        if (!isSelectedVanillaMob(mob)
                 || !mob.isAlive()
                 || !mob.onGround()
                 || mob.isPassenger()) {
+            LAST_STEP.remove(mob.getUUID());
             return;
         }
 
@@ -49,11 +54,12 @@ public final class EntityTrafficEvents {
 
         if (previousStep == null
                 || previousStep.dimension() != currentStep.dimension()
-                || previousStep.pos().equals(currentStep.pos())) {
+                || previousStep.pos().equals(currentStep.pos())
+                || !isAdjacentStep(previousStep.pos(), currentStep.pos())) {
             return;
         }
 
-        PathWearEvents.addWear(level, groundPos, 1);
+        PathWearEvents.addWear(level, groundPos, wearWeightFor(mob));
     }
 
     @SubscribeEvent
@@ -64,6 +70,22 @@ public final class EntityTrafficEvents {
     private static boolean isSelectedVanillaMob(PathfinderMob mob) {
         return !(mob instanceof Animal)
                 && "minecraft".equals(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()).getNamespace());
+    }
+
+    private static boolean isAdjacentStep(BlockPos previous, BlockPos current) {
+        return Math.abs(current.getX() - previous.getX()) <= 1
+                && Math.abs(current.getY() - previous.getY()) <= 1
+                && Math.abs(current.getZ() - previous.getZ()) <= 1;
+    }
+
+    private static int wearWeightFor(PathfinderMob mob) {
+        EntityType<?> type = mob.getType();
+        if (type == EntityType.IRON_GOLEM
+                || type == EntityType.RAVAGER
+                || type == EntityType.WARDEN) {
+            return 2;
+        }
+        return 1;
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
