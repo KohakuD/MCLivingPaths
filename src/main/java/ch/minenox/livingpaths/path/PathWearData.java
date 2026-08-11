@@ -21,7 +21,8 @@ public final class PathWearData extends SavedData {
     private static final String EDGE_VISITS_KEY = "edgeVisits";
     private static final String LAST_USED_KEY = "lastUsed";
     private static final String ESTABLISHED_KEY = "established";
-    private static final String SMOOTH_STONE_FROM_STONE_KEY = "smoothStoneFromStone";
+    private static final String LEGACY_SMOOTH_STONE_FROM_STONE_KEY = "smoothStoneFromStone";
+    private static final String STONE_PATH_ORIGIN_KEY = "stonePathOrigin";
 
     private static final long TICKS_PER_MINECRAFT_DAY = 24_000L;
     private static final long CLEANUP_INTERVAL_TICKS = TICKS_PER_MINECRAFT_DAY;
@@ -52,8 +53,15 @@ public final class PathWearData extends SavedData {
                     : 0L;
             boolean established = entry.contains(ESTABLISHED_KEY, Tag.TAG_BYTE)
                     && entry.getBoolean(ESTABLISHED_KEY);
-            boolean smoothStoneFromStone = entry.contains(SMOOTH_STONE_FROM_STONE_KEY, Tag.TAG_BYTE)
-                    && entry.getBoolean(SMOOTH_STONE_FROM_STONE_KEY);
+            boolean stonePathOrigin;
+            if (entry.contains(STONE_PATH_ORIGIN_KEY, Tag.TAG_BYTE)) {
+                stonePathOrigin = entry.getBoolean(STONE_PATH_ORIGIN_KEY);
+            } else {
+                boolean smoothStoneFromNaturalStone =
+                        entry.contains(LEGACY_SMOOTH_STONE_FROM_STONE_KEY, Tag.TAG_BYTE)
+                                && entry.getBoolean(LEGACY_SMOOTH_STONE_FROM_STONE_KEY);
+                stonePathOrigin = established && !smoothStoneFromNaturalStone;
+            }
 
             if (visits > 0 || established) {
                 data.wearByPosition.put(
@@ -63,7 +71,7 @@ public final class PathWearData extends SavedData {
                                 Math.min(edgeVisits, visits),
                                 lastUsed,
                                 established,
-                                smoothStoneFromStone
+                                stonePathOrigin
                         )
                 );
             }
@@ -84,8 +92,8 @@ public final class PathWearData extends SavedData {
             entry.putLong(LAST_USED_KEY, wearEntry.getValue().lastUsedGameTime());
             entry.putBoolean(ESTABLISHED_KEY, wearEntry.getValue().established());
             entry.putBoolean(
-                    SMOOTH_STONE_FROM_STONE_KEY,
-                    wearEntry.getValue().smoothStoneFromStone()
+                    STONE_PATH_ORIGIN_KEY,
+                    wearEntry.getValue().stonePathOrigin()
             );
             wearEntries.add(entry);
         }
@@ -108,11 +116,11 @@ public final class PathWearData extends SavedData {
         int updatedWear = currentWear + amount;
         int updatedEdgeWear = Math.min(updatedWear, currentEdgeWear + (edgeWear ? amount : 0));
         boolean established = previous != null && previous.established();
-        boolean smoothStoneFromStone = previous != null && previous.smoothStoneFromStone();
+        boolean stonePathOrigin = previous != null && previous.stonePathOrigin();
 
         wearByPosition.put(
                 key,
-                new WearEntry(updatedWear, updatedEdgeWear, gameTime, established, smoothStoneFromStone)
+                new WearEntry(updatedWear, updatedEdgeWear, gameTime, established, stonePathOrigin)
         );
         setDirty();
         return updatedWear;
@@ -159,9 +167,9 @@ public final class PathWearData extends SavedData {
         return entry != null && entry.established();
     }
 
-    public boolean isSmoothStoneFromStone(BlockPos pos) {
+    public boolean hasStonePathOrigin(BlockPos pos) {
         WearEntry entry = wearByPosition.get(pos.asLong());
-        return entry != null && entry.established() && entry.smoothStoneFromStone();
+        return entry != null && entry.established() && entry.stonePathOrigin();
     }
 
     public void clearWear(BlockPos pos) {
@@ -172,14 +180,14 @@ public final class PathWearData extends SavedData {
 
     public void markEstablished(BlockPos pos, long gameTime) {
         WearEntry previous = wearByPosition.get(pos.asLong());
-        boolean smoothStoneFromStone = previous != null && previous.smoothStoneFromStone();
-        markEstablished(pos, gameTime, smoothStoneFromStone);
+        boolean stonePathOrigin = previous != null && previous.stonePathOrigin();
+        markEstablished(pos, gameTime, stonePathOrigin);
     }
 
-    public void markEstablished(BlockPos pos, long gameTime, boolean smoothStoneFromStone) {
+    public void markEstablished(BlockPos pos, long gameTime, boolean stonePathOrigin) {
         wearByPosition.put(
                 pos.asLong(),
-                new WearEntry(0, 0, gameTime, true, smoothStoneFromStone)
+                new WearEntry(0, 0, gameTime, true, stonePathOrigin)
         );
         setDirty();
     }
@@ -204,7 +212,9 @@ public final class PathWearData extends SavedData {
     public void completeRegeneration(BlockPos pos, long gameTime, boolean remainsEstablished) {
         long key = pos.asLong();
         if (remainsEstablished) {
-            wearByPosition.put(key, new WearEntry(0, 0, gameTime, true, false));
+            WearEntry previous = wearByPosition.get(key);
+            boolean stonePathOrigin = previous != null && previous.stonePathOrigin();
+            wearByPosition.put(key, new WearEntry(0, 0, gameTime, true, stonePathOrigin));
         } else {
             wearByPosition.remove(key);
         }
@@ -230,7 +240,7 @@ public final class PathWearData extends SavedData {
                         entry.edgeVisits(),
                         agedLastUsed,
                         entry.established(),
-                        entry.smoothStoneFromStone()
+                        entry.stonePathOrigin()
                 )
         );
         setDirty();
@@ -284,7 +294,7 @@ public final class PathWearData extends SavedData {
             int edgeVisits,
             long lastUsedGameTime,
             boolean established,
-            boolean smoothStoneFromStone
+            boolean stonePathOrigin
     ) {
     }
 }
