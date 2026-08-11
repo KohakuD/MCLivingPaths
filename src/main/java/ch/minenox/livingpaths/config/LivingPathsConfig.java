@@ -31,6 +31,7 @@ public final class LivingPathsConfig {
     public static final ModConfigSpec.IntValue COARSE_DIRT_THRESHOLD;
     public static final ModConfigSpec.IntValue GRAVEL_THRESHOLD;
     public static final ModConfigSpec.IntValue STONE_THRESHOLD;
+    public static final ModConfigSpec.IntValue COBBLESTONE_THRESHOLD;
 
     public static final ModConfigSpec.BooleanValue WEAR_DECAY_ENABLED;
     public static final ModConfigSpec.IntValue WEAR_DECAY_INTERVAL_DAYS;
@@ -80,6 +81,8 @@ public final class LivingPathsConfig {
                 "Gravel -> Cobblestone or Mossy Cobblestone.");
         STONE_THRESHOLD = threshold(builder, "stone", 500,
                 "Stone -> Cobblestone or Mossy Cobblestone.");
+        COBBLESTONE_THRESHOLD = threshold(builder, "cobblestone", 1_000,
+                "Established Cobblestone created by Living Paths -> Smooth Stone.");
 
         builder.pop();
 
