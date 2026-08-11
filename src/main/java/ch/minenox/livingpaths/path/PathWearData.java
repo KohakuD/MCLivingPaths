@@ -20,6 +20,7 @@ public final class PathWearData extends SavedData {
     private static final String VISITS_KEY = "visits";
     private static final String EDGE_VISITS_KEY = "edgeVisits";
     private static final String LAST_USED_KEY = "lastUsed";
+    private static final String ESTABLISHED_KEY = "established";
 
     private static final long TICKS_PER_MINECRAFT_DAY = 24_000L;
     private static final long CLEANUP_INTERVAL_TICKS = TICKS_PER_MINECRAFT_DAY;
@@ -48,11 +49,13 @@ public final class PathWearData extends SavedData {
             long lastUsed = entry.contains(LAST_USED_KEY, Tag.TAG_LONG)
                     ? entry.getLong(LAST_USED_KEY)
                     : 0L;
+            boolean established = entry.contains(ESTABLISHED_KEY, Tag.TAG_BYTE)
+                    && entry.getBoolean(ESTABLISHED_KEY);
 
-            if (visits > 0) {
+            if (visits > 0 || established) {
                 data.wearByPosition.put(
                         position,
-                        new WearEntry(visits, Math.min(edgeVisits, visits), lastUsed)
+                        new WearEntry(visits, Math.min(edgeVisits, visits), lastUsed, established)
                 );
             }
         }
@@ -70,6 +73,7 @@ public final class PathWearData extends SavedData {
             entry.putInt(VISITS_KEY, wearEntry.getValue().visits());
             entry.putInt(EDGE_VISITS_KEY, wearEntry.getValue().edgeVisits());
             entry.putLong(LAST_USED_KEY, wearEntry.getValue().lastUsedGameTime());
+            entry.putBoolean(ESTABLISHED_KEY, wearEntry.getValue().established());
             wearEntries.add(entry);
         }
 
@@ -90,8 +94,9 @@ public final class PathWearData extends SavedData {
         int currentEdgeWear = previous == null ? 0 : effectiveEdgeWear(previous, gameTime);
         int updatedWear = currentWear + amount;
         int updatedEdgeWear = Math.min(updatedWear, currentEdgeWear + (edgeWear ? amount : 0));
+        boolean established = previous != null && previous.established();
 
-        wearByPosition.put(key, new WearEntry(updatedWear, updatedEdgeWear, gameTime));
+        wearByPosition.put(key, new WearEntry(updatedWear, updatedEdgeWear, gameTime, established));
         setDirty();
         return updatedWear;
     }
@@ -104,8 +109,10 @@ public final class PathWearData extends SavedData {
 
         int effectiveWear = effectiveWear(entry, gameTime);
         if (effectiveWear <= 0) {
-            wearByPosition.remove(pos.asLong());
-            setDirty();
+            if (!entry.established()) {
+                wearByPosition.remove(pos.asLong());
+                setDirty();
+            }
             return 0;
         }
 
@@ -120,8 +127,10 @@ public final class PathWearData extends SavedData {
 
         int effectiveWear = effectiveWear(entry, gameTime);
         if (effectiveWear <= 0) {
-            wearByPosition.remove(pos.asLong());
-            setDirty();
+            if (!entry.established()) {
+                wearByPosition.remove(pos.asLong());
+                setDirty();
+            }
             return 0;
         }
 
@@ -132,6 +141,38 @@ public final class PathWearData extends SavedData {
         if (wearByPosition.remove(pos.asLong()) != null) {
             setDirty();
         }
+    }
+
+    public void markEstablished(BlockPos pos, long gameTime) {
+        wearByPosition.put(pos.asLong(), new WearEntry(0, 0, gameTime, true));
+        setDirty();
+    }
+
+    public java.util.List<BlockPos> regenerationCandidates(long gameTime, int intervalDays, int limit) {
+        long requiredInactiveTicks = (long) intervalDays * TICKS_PER_MINECRAFT_DAY;
+        java.util.List<BlockPos> candidates = new java.util.ArrayList<>();
+
+        for (Map.Entry<Long, WearEntry> mapEntry : wearByPosition.entrySet()) {
+            WearEntry entry = mapEntry.getValue();
+            long inactiveTicks = Math.max(0L, gameTime - entry.lastUsedGameTime());
+            if (entry.established() && inactiveTicks >= requiredInactiveTicks) {
+                candidates.add(BlockPos.of(mapEntry.getKey()));
+                if (candidates.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return candidates;
+    }
+
+    public void completeRegeneration(BlockPos pos, long gameTime, boolean remainsEstablished) {
+        long key = pos.asLong();
+        if (remainsEstablished) {
+            wearByPosition.put(key, new WearEntry(0, 0, gameTime, true));
+        } else {
+            wearByPosition.remove(key);
+        }
+        setDirty();
     }
 
     public void ageWearForDebug(BlockPos pos, int days) {
@@ -148,7 +189,7 @@ public final class PathWearData extends SavedData {
         long agedLastUsed = entry.lastUsedGameTime() - days * TICKS_PER_MINECRAFT_DAY;
         wearByPosition.put(
                 key,
-                new WearEntry(entry.visits(), entry.edgeVisits(), agedLastUsed)
+                new WearEntry(entry.visits(), entry.edgeVisits(), agedLastUsed, entry.established())
         );
         setDirty();
     }
@@ -161,7 +202,8 @@ public final class PathWearData extends SavedData {
 
         lastCleanupGameTime = gameTime;
         boolean removedAny = wearByPosition.entrySet().removeIf(
-                entry -> effectiveWear(entry.getValue(), gameTime) <= 0
+                entry -> !entry.getValue().established()
+                        && effectiveWear(entry.getValue(), gameTime) <= 0
         );
 
         if (removedAny) {
@@ -195,6 +237,6 @@ public final class PathWearData extends SavedData {
         return decaySteps * decayAmount;
     }
 
-    private record WearEntry(int visits, int edgeVisits, long lastUsedGameTime) {
+    private record WearEntry(int visits, int edgeVisits, long lastUsedGameTime, boolean established) {
     }
 }
