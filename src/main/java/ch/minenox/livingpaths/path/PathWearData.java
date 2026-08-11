@@ -21,6 +21,7 @@ public final class PathWearData extends SavedData {
     private static final String EDGE_VISITS_KEY = "edgeVisits";
     private static final String LAST_USED_KEY = "lastUsed";
     private static final String ESTABLISHED_KEY = "established";
+    private static final String SMOOTH_STONE_FROM_STONE_KEY = "smoothStoneFromStone";
 
     private static final long TICKS_PER_MINECRAFT_DAY = 24_000L;
     private static final long CLEANUP_INTERVAL_TICKS = TICKS_PER_MINECRAFT_DAY;
@@ -51,11 +52,19 @@ public final class PathWearData extends SavedData {
                     : 0L;
             boolean established = entry.contains(ESTABLISHED_KEY, Tag.TAG_BYTE)
                     && entry.getBoolean(ESTABLISHED_KEY);
+            boolean smoothStoneFromStone = entry.contains(SMOOTH_STONE_FROM_STONE_KEY, Tag.TAG_BYTE)
+                    && entry.getBoolean(SMOOTH_STONE_FROM_STONE_KEY);
 
             if (visits > 0 || established) {
                 data.wearByPosition.put(
                         position,
-                        new WearEntry(visits, Math.min(edgeVisits, visits), lastUsed, established)
+                        new WearEntry(
+                                visits,
+                                Math.min(edgeVisits, visits),
+                                lastUsed,
+                                established,
+                                smoothStoneFromStone
+                        )
                 );
             }
         }
@@ -74,6 +83,10 @@ public final class PathWearData extends SavedData {
             entry.putInt(EDGE_VISITS_KEY, wearEntry.getValue().edgeVisits());
             entry.putLong(LAST_USED_KEY, wearEntry.getValue().lastUsedGameTime());
             entry.putBoolean(ESTABLISHED_KEY, wearEntry.getValue().established());
+            entry.putBoolean(
+                    SMOOTH_STONE_FROM_STONE_KEY,
+                    wearEntry.getValue().smoothStoneFromStone()
+            );
             wearEntries.add(entry);
         }
 
@@ -95,8 +108,12 @@ public final class PathWearData extends SavedData {
         int updatedWear = currentWear + amount;
         int updatedEdgeWear = Math.min(updatedWear, currentEdgeWear + (edgeWear ? amount : 0));
         boolean established = previous != null && previous.established();
+        boolean smoothStoneFromStone = previous != null && previous.smoothStoneFromStone();
 
-        wearByPosition.put(key, new WearEntry(updatedWear, updatedEdgeWear, gameTime, established));
+        wearByPosition.put(
+                key,
+                new WearEntry(updatedWear, updatedEdgeWear, gameTime, established, smoothStoneFromStone)
+        );
         setDirty();
         return updatedWear;
     }
@@ -142,6 +159,11 @@ public final class PathWearData extends SavedData {
         return entry != null && entry.established();
     }
 
+    public boolean isSmoothStoneFromStone(BlockPos pos) {
+        WearEntry entry = wearByPosition.get(pos.asLong());
+        return entry != null && entry.established() && entry.smoothStoneFromStone();
+    }
+
     public void clearWear(BlockPos pos) {
         if (wearByPosition.remove(pos.asLong()) != null) {
             setDirty();
@@ -149,7 +171,16 @@ public final class PathWearData extends SavedData {
     }
 
     public void markEstablished(BlockPos pos, long gameTime) {
-        wearByPosition.put(pos.asLong(), new WearEntry(0, 0, gameTime, true));
+        WearEntry previous = wearByPosition.get(pos.asLong());
+        boolean smoothStoneFromStone = previous != null && previous.smoothStoneFromStone();
+        markEstablished(pos, gameTime, smoothStoneFromStone);
+    }
+
+    public void markEstablished(BlockPos pos, long gameTime, boolean smoothStoneFromStone) {
+        wearByPosition.put(
+                pos.asLong(),
+                new WearEntry(0, 0, gameTime, true, smoothStoneFromStone)
+        );
         setDirty();
     }
 
@@ -173,7 +204,7 @@ public final class PathWearData extends SavedData {
     public void completeRegeneration(BlockPos pos, long gameTime, boolean remainsEstablished) {
         long key = pos.asLong();
         if (remainsEstablished) {
-            wearByPosition.put(key, new WearEntry(0, 0, gameTime, true));
+            wearByPosition.put(key, new WearEntry(0, 0, gameTime, true, false));
         } else {
             wearByPosition.remove(key);
         }
@@ -194,7 +225,13 @@ public final class PathWearData extends SavedData {
         long agedLastUsed = entry.lastUsedGameTime() - days * TICKS_PER_MINECRAFT_DAY;
         wearByPosition.put(
                 key,
-                new WearEntry(entry.visits(), entry.edgeVisits(), agedLastUsed, entry.established())
+                new WearEntry(
+                        entry.visits(),
+                        entry.edgeVisits(),
+                        agedLastUsed,
+                        entry.established(),
+                        entry.smoothStoneFromStone()
+                )
         );
         setDirty();
     }
@@ -242,6 +279,12 @@ public final class PathWearData extends SavedData {
         return decaySteps * decayAmount;
     }
 
-    private record WearEntry(int visits, int edgeVisits, long lastUsedGameTime, boolean established) {
+    private record WearEntry(
+            int visits,
+            int edgeVisits,
+            long lastUsedGameTime,
+            boolean established,
+            boolean smoothStoneFromStone
+    ) {
     }
 }
