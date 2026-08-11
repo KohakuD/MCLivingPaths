@@ -96,7 +96,7 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 
 ## 0.6.0 – Configuration & Long-Term Behaviour
 
-- [ ] Verschleiss-Schwellen konfigurierbar machen
+- [x] Verschleiss-Schwellen konfigurierbar machen
 - [ ] Wear-Decay konfigurierbar machen
 - [ ] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
 - [ ] Entitätsverkehr konfigurierbar machen
