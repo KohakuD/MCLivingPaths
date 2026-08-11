@@ -54,7 +54,7 @@ public final class PathRegenerationEvents {
             data.completeRegeneration(
                     pos,
                     level.getGameTime(),
-                    hasFurtherRegeneration(previousBlock)
+                    hasFurtherRegeneration(data, pos, previousBlock)
             );
             regenerated++;
         }
@@ -62,7 +62,10 @@ public final class PathRegenerationEvents {
 
     private static Block previousBlockFor(PathWearData data, BlockPos pos, Block block) {
         if (block == Blocks.SMOOTH_STONE) {
-            return data.isSmoothStoneFromStone(pos) ? Blocks.STONE : Blocks.COBBLESTONE;
+            return Blocks.STONE;
+        }
+        if (block == Blocks.STONE) {
+            return data.hasStonePathOrigin(pos) ? Blocks.COBBLESTONE : null;
         }
         if (block == Blocks.COBBLESTONE) {
             return Blocks.GRAVEL;
@@ -85,8 +88,9 @@ public final class PathRegenerationEvents {
         return null;
     }
 
-    private static boolean hasFurtherRegeneration(Block block) {
-        return block == Blocks.COBBLESTONE
+    private static boolean hasFurtherRegeneration(PathWearData data, BlockPos pos, Block block) {
+        return (block == Blocks.STONE && data.hasStonePathOrigin(pos))
+                || block == Blocks.COBBLESTONE
                 || block == Blocks.GRAVEL
                 || block == Blocks.COARSE_DIRT
                 || block == Blocks.DIRT_PATH
