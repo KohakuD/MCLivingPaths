@@ -35,10 +35,10 @@ public final class PathWearEvents {
     private static final int STONE_THRESHOLD = 500;
 
     /**
-     * Roughly one quarter of travelled positions contribute wear to a neighbouring shoulder.
+     * Two out of five travelled positions contribute wear to a neighbouring shoulder.
      * The decision and side are derived from the block position so path width stays stable across reloads.
      */
-    private static final int EDGE_WEAR_POSITION_PERCENT = 25;
+    private static final int EDGE_WEAR_POSITION_PERCENT = 40;
     private static final long EDGE_WEAR_SALT = 0x45444745L;
     private static final long EDGE_SIDE_SALT = 0x53494445L;
 
@@ -71,7 +71,9 @@ public final class PathWearEvents {
         }
 
         addWear(level, groundPos, 1, false);
-        addOrganicEdgeWear(level, previousStep, currentStep);
+        if (previousStep != null && previousStep.dimension() == currentStep.dimension()) {
+            addOrganicEdgeWear(level, previousStep.pos(), currentStep.pos(), 1);
+        }
     }
 
     @SubscribeEvent
@@ -79,18 +81,15 @@ public final class PathWearEvents {
         LAST_STEP.remove(event.getEntity().getUUID());
     }
 
-    private static void addOrganicEdgeWear(
+    public static void addOrganicEdgeWear(
             ServerLevel level,
-            StepLocation previousStep,
-            StepLocation currentStep
+            BlockPos previousPos,
+            BlockPos currentPos,
+            int amount
     ) {
-        if (previousStep == null || previousStep.dimension() != currentStep.dimension()) {
-            return;
-        }
-
-        int dx = currentStep.pos().getX() - previousStep.pos().getX();
-        int dz = currentStep.pos().getZ() - previousStep.pos().getZ();
-        int dy = currentStep.pos().getY() - previousStep.pos().getY();
+        int dx = currentPos.getX() - previousPos.getX();
+        int dz = currentPos.getZ() - previousPos.getZ();
+        int dy = currentPos.getY() - previousPos.getY();
 
         if ((dx == 0 && dz == 0)
                 || Math.abs(dx) > 1
@@ -99,7 +98,7 @@ public final class PathWearEvents {
             return;
         }
 
-        if (variationPercent(currentStep.pos(), EDGE_WEAR_SALT) >= EDGE_WEAR_POSITION_PERCENT) {
+        if (variationPercent(currentPos, EDGE_WEAR_SALT) >= EDGE_WEAR_POSITION_PERCENT) {
             return;
         }
 
@@ -112,15 +111,15 @@ public final class PathWearEvents {
             sideZ = -sideZ;
         }
 
-        if (variationPercent(currentStep.pos(), EDGE_SIDE_SALT) >= 50) {
+        if (variationPercent(currentPos, EDGE_SIDE_SALT) >= 50) {
             sideX = -sideX;
             sideZ = -sideZ;
         }
 
-        BlockPos edgeColumn = currentStep.pos().offset(sideX, 0, sideZ);
+        BlockPos edgeColumn = currentPos.offset(sideX, 0, sideZ);
         BlockPos edgePos = findWearableSurface(level, edgeColumn);
         if (edgePos != null) {
-            addWear(level, edgePos, 1, true);
+            addWear(level, edgePos, amount, true);
         }
     }
 
