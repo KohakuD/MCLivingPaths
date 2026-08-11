@@ -89,7 +89,7 @@ The server-side implementation is designed so multiple players can contribute to
 ### Current entity-traffic behaviour
 
 - Villagers, Wandering Traders and other ground-based vanilla non-animal mobs contribute to path wear.
-- Animals are excluded so enclosures and grazing areas do not turn into paths.
+- Animals are excluded by default so enclosures and grazing areas do not turn into paths; they can be enabled explicitly in the configuration.
 - Normal mobs contribute one wear point per valid ground-block crossing.
 - Iron Golems, Ravagers and Wardens contribute two wear points per valid crossing.
 - Still entities, passengers, vehicles, teleports and large position jumps do not create artificial wear.
@@ -117,6 +117,7 @@ The server-side implementation is designed so multiple players can contribute to
 - [x] Make wear decay configurable
 - [x] Make protected blocks configurable while keeping Farmland protected by default
 - [x] Make entity traffic configurable
+- [ ] Make animal traffic optional and disabled by default
 - [x] Evaluate regeneration or overgrowth of rarely used established paths
 - [x] Evaluate rare further development of extremely heavily used Cobblestone paths
 - [ ] Provide sensible defaults so no configuration is required for normal use
