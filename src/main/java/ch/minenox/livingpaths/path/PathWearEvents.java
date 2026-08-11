@@ -137,7 +137,7 @@ public final class PathWearEvents {
 
     private static boolean isWearableExposedSurface(ServerLevel level, BlockPos pos) {
         Block block = level.getBlockState(pos).getBlock();
-        if (thresholdFor(block) <= 0 || block == Blocks.FARMLAND) {
+        if (thresholdFor(block) <= 0 || ProtectedBlocks.contains(block)) {
             return false;
         }
 
@@ -158,7 +158,7 @@ public final class PathWearEvents {
         Block block = state.getBlock();
         PathWearData data = PathWearData.get(level);
 
-        if (block == Blocks.FARMLAND) {
+        if (ProtectedBlocks.contains(block)) {
             data.clearWear(pos);
             return 0;
         }
@@ -196,7 +196,8 @@ public final class PathWearEvents {
     }
 
     public static int getThreshold(ServerLevel level, BlockPos pos) {
-        return thresholdFor(level.getBlockState(pos).getBlock());
+        Block block = level.getBlockState(pos).getBlock();
+        return ProtectedBlocks.contains(block) ? -1 : thresholdFor(block);
     }
 
     private static int thresholdFor(Block block) {
