@@ -61,6 +61,9 @@ public final class PathRegenerationEvents {
     }
 
     private static Block previousBlockFor(Block block) {
+        if (block == Blocks.SMOOTH_STONE) {
+            return Blocks.COBBLESTONE;
+        }
         if (block == Blocks.COBBLESTONE) {
             return Blocks.GRAVEL;
         }
@@ -83,7 +86,8 @@ public final class PathRegenerationEvents {
     }
 
     private static boolean hasFurtherRegeneration(Block block) {
-        return block == Blocks.GRAVEL
+        return block == Blocks.COBBLESTONE
+                || block == Blocks.GRAVEL
                 || block == Blocks.COARSE_DIRT
                 || block == Blocks.DIRT_PATH
                 || block == Blocks.MOSS_BLOCK;
