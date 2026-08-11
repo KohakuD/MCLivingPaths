@@ -64,7 +64,7 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Moos eher an wenig genutzten Rändern entstehen lassen
 - [x] Natürlich wirkende Wegbreiten statt einzelner gleichförmiger Blocklinien erzeugen
 - [x] Kontrollierte Variation einführen, damit benachbarte Wegblöcke nicht immer identisch sind
-- [ ] Wegentwicklung ausreichend deterministisch halten, damit keine sichtbaren Neuwürfe entstehen
+- [x] Wegentwicklung ausreichend deterministisch halten, damit keine sichtbaren Neuwürfe entstehen
 
 ### Aktuelles Verhalten organischer Wege
 
@@ -75,6 +75,8 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - Grössere Positionssprünge und Teleports erzeugen keinen Randverschleiss.
 - Randdominierter Verschleiss kann in feuchten Biomen Moss und Mossy Cobblestone bevorzugen.
 - Randverschleiss verwendet dieselben Schutzregeln und biomabhängigen Entwicklungsregeln wie direkter Verschleiss.
+- Begehbare Nachbaroberflächen eine Blockstufe höher oder tiefer können ebenfalls Randverschleiss erhalten.
+- Wear-, Edge-Wear-Werte und die Position der Wegschultern wurden über einen Welt-Neustart hinweg geprüft und blieben stabil.
 
 ## 0.4.0 – Entity Traffic
 
