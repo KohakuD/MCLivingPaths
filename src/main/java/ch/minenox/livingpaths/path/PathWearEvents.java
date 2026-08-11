@@ -32,6 +32,7 @@ public final class PathWearEvents {
     private static final int ROOTED_DIRT_THRESHOLD = 75;
     private static final int COARSE_DIRT_THRESHOLD = 100;
     private static final int GRAVEL_THRESHOLD = 200;
+    private static final int STONE_THRESHOLD = 500;
 
     /**
      * Roughly one quarter of travelled positions contribute wear to a neighbouring shoulder.
@@ -241,6 +242,9 @@ public final class PathWearEvents {
         if (block == Blocks.GRAVEL) {
             return GRAVEL_THRESHOLD;
         }
+        if (block == Blocks.STONE) {
+            return STONE_THRESHOLD;
+        }
         return -1;
     }
 
@@ -287,7 +291,7 @@ public final class PathWearEvents {
         if (block == Blocks.COARSE_DIRT) {
             return Blocks.GRAVEL;
         }
-        if (block == Blocks.GRAVEL) {
+        if (block == Blocks.GRAVEL || block == Blocks.STONE) {
             if (profile == BiomePathProfiles.PathProfile.DAMP
                     && (edgeDominated || BiomePathProfiles.usesDampMossyCobblestoneVariation(level, pos))) {
                 return Blocks.MOSSY_COBBLESTONE;
