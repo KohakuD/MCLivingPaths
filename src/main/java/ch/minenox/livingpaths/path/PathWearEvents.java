@@ -194,7 +194,11 @@ public final class PathWearEvents {
         }
 
         level.setBlockAndUpdate(pos, nextBlock.defaultBlockState());
-        data.markEstablished(pos, level.getGameTime());
+        data.markEstablished(
+                pos,
+                level.getGameTime(),
+                block == Blocks.STONE && nextBlock == Blocks.SMOOTH_STONE
+        );
         return 0;
     }
 
@@ -298,10 +302,10 @@ public final class PathWearEvents {
         if (block == Blocks.COARSE_DIRT) {
             return Blocks.GRAVEL;
         }
-        if (block == Blocks.COBBLESTONE) {
+        if (block == Blocks.STONE || block == Blocks.COBBLESTONE) {
             return Blocks.SMOOTH_STONE;
         }
-        if (block == Blocks.GRAVEL || block == Blocks.STONE) {
+        if (block == Blocks.GRAVEL) {
             if (profile == BiomePathProfiles.PathProfile.DAMP
                     && (edgeDominated || BiomePathProfiles.usesDampMossyCobblestoneVariation(level, pos))) {
                 return Blocks.MOSSY_COBBLESTONE;
