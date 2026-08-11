@@ -97,11 +97,19 @@ The server-side implementation is designed so multiple players can contribute to
 
 ## 0.5.0 – MineColonies Integration
 
-- [ ] Detect MineColonies Citizens when MineColonies is installed
-- [ ] Let Citizens contribute naturally to Living Paths wear
-- [ ] Keep MineColonies an optional integration rather than a hard dependency
-- [ ] Evaluate role- or traffic-based weighting only if it improves natural path formation
-- [ ] Validate common colony routes such as Builder, Warehouse, Residence, Mine and Farm traffic
+- [x] Detect MineColonies Citizens when MineColonies is installed
+- [x] Let Citizens contribute naturally to Living Paths wear
+- [x] Keep MineColonies an optional integration rather than a hard dependency
+- [x] Evaluate role- or traffic-based weighting only if it improves natural path formation
+- [x] Validate common colony routes such as Builder, Warehouse, Residence, Mine and Farm traffic
+
+### Current MineColonies behaviour
+
+- MineColonies Citizens are detected through the registered `minecolonies:citizen` entity type without importing MineColonies classes.
+- The integration remains optional and Living Paths also starts normally when MineColonies is not installed.
+- Citizens contribute one wear point per valid ground-block crossing and use the same biome-aware centre and shoulder rules as other traffic.
+- Citizen professions do not receive artificial wear bonuses; frequently travelled work routes become stronger through their actual traffic.
+- Citizen traffic was validated in-game on colony routes; crossings increased while Citizens moved and stopped when they stood still.
 
 ## 0.6.0 – Configuration & Long-Term Behaviour
 
