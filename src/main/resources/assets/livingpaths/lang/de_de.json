@@ -38,5 +38,7 @@
   "config.livingpaths.entity_traffic.citizen_weight": "Gewicht der Bürger",
   "config.livingpaths.section.regeneration": "Wegregeneration",
   "config.livingpaths.regeneration.enabled": "Regeneration aktivieren",
-  "config.livingpaths.regeneration.interval_days": "Intervall (inaktive Minecraft-Tage)"
+  "config.livingpaths.regeneration.interval_days": "Intervall (inaktive Minecraft-Tage)",
+  "config.livingpaths.section.debug": "Debug",
+  "config.livingpaths.debug.hud_enabled": "Debug-HUD anzeigen"
 }

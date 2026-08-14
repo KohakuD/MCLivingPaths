@@ -1,6 +1,7 @@
 package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.LivingPaths;
+import ch.minenox.livingpaths.config.LivingPathsClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
@@ -23,6 +24,10 @@ public final class DebugHudOverlay {
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
+        if (!LivingPathsClientConfig.DEBUG_HUD_ENABLED.get()) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui) {
             return;
