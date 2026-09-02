@@ -43,10 +43,12 @@ public final class LivingPathsConfig {
     public static final ModConfigSpec.BooleanValue VANILLA_MOB_TRAFFIC_ENABLED;
     public static final ModConfigSpec.BooleanValue ANIMAL_TRAFFIC_ENABLED;
     public static final ModConfigSpec.BooleanValue MINECOLONIES_CITIZEN_TRAFFIC_ENABLED;
+    public static final ModConfigSpec.BooleanValue PLAYER_TWO_COMPANION_TRAFFIC_ENABLED;
     public static final ModConfigSpec.IntValue NORMAL_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue HEAVY_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue ANIMAL_ENTITY_WEIGHT;
     public static final ModConfigSpec.IntValue MINECOLONIES_CITIZEN_WEIGHT;
+    public static final ModConfigSpec.IntValue PLAYER_TWO_COMPANION_WEIGHT;
 
     public static final ModConfigSpec.BooleanValue REGENERATION_ENABLED;
     public static final ModConfigSpec.IntValue REGENERATION_INTERVAL_DAYS;
@@ -150,6 +152,10 @@ public final class LivingPathsConfig {
                 "Whether MineColonies Citizens contribute to wear when MineColonies is installed."
         ).translation("config.livingpaths.entity_traffic.minecolonies_citizens")
                 .define("minecolonies_citizens", true);
+        PLAYER_TWO_COMPANION_TRAFFIC_ENABLED = builder.comment(
+                "Whether the Player Two companion Nox contributes to wear when Player Two is installed."
+        ).translation("config.livingpaths.entity_traffic.player_two_companion")
+                .define("player_two_companion", true);
         NORMAL_ENTITY_WEIGHT = entityWeight(builder, "normal_weight", 1,
                 "Wear points from a normal vanilla mob crossing.");
         HEAVY_ENTITY_WEIGHT = entityWeight(builder, "heavy_weight", 2,
@@ -158,6 +164,8 @@ public final class LivingPathsConfig {
                 "Wear points from an animal crossing when animal traffic is enabled.");
         MINECOLONIES_CITIZEN_WEIGHT = entityWeight(builder, "citizen_weight", 1,
                 "Wear points from a MineColonies Citizen crossing.");
+        PLAYER_TWO_COMPANION_WEIGHT = entityWeight(builder, "player_two_companion_weight", 1,
+                "Wear points from a Player Two companion crossing.");
 
         builder.pop();
 

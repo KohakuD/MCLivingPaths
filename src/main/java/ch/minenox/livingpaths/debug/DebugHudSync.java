@@ -28,12 +28,26 @@ public final class DebugHudSync {
         BlockPos rightColumn = centre.relative(forward.getClockWise());
         BlockPos left = surfaceOrColumn(level, leftColumn);
         BlockPos right = surfaceOrColumn(level, rightColumn);
-        String profile = BiomePathProfiles.profileFor(level, centre).name();
+        var traffic = EntityTrafficEvents.debugSnapshot();
 
         PacketDistributor.sendToPlayer(player, new DebugHudPayload(
-                profile,
-                centre.getX() + " " + centre.getY() + " " + centre.getZ() + " | facing " + forward.getName(),
-                EntityTrafficEvents.debugSummary(),
+                BiomePathProfiles.profileFor(level, centre).name().toLowerCase(java.util.Locale.ROOT),
+                new DebugHudPayload.PositionSnapshot(
+                        centre.getX(), centre.getY(), centre.getZ(), forward.getName()
+                ),
+                new DebugHudPayload.EntityTrafficSnapshot(
+                        new DebugHudPayload.TrafficTotals(
+                                traffic.trackedEntities(),
+                                traffic.countedCrossings(),
+                                traffic.appliedWear()
+                        ),
+                        new DebugHudPayload.IntegrationTraffic(
+                                traffic.trackedCitizens(),
+                                traffic.citizenCrossings(),
+                                traffic.trackedPlayerTwoCompanions(),
+                                traffic.playerTwoCompanionCrossings()
+                        )
+                ),
                 describe(level, left),
                 describe(level, centre),
                 describe(level, right)
@@ -45,16 +59,14 @@ public final class DebugHudSync {
         return surface != null ? surface : referencePos;
     }
 
-    private static String describe(ServerLevel level, BlockPos pos) {
+    private static DebugHudPayload.BlockSnapshot describe(ServerLevel level, BlockPos pos) {
         var block = level.getBlockState(pos).getBlock();
-        String blockName = BuiltInRegistries.BLOCK.getKey(block).toString();
-        int wear = PathWearEvents.getWear(level, pos);
-        int edgeWear = PathWearEvents.getEdgeWear(level, pos);
-        int threshold = PathWearEvents.getThreshold(level, pos);
-
-        return pos.getX() + " " + pos.getY() + " " + pos.getZ()
-                + " | " + blockName
-                + " | wear " + wear + "/" + threshold
-                + " | edge " + edgeWear;
+        return new DebugHudPayload.BlockSnapshot(
+                new DebugHudPayload.BlockPosition(pos.getX(), pos.getY(), pos.getZ()),
+                BuiltInRegistries.BLOCK.getKey(block).toString(),
+                PathWearEvents.getWear(level, pos),
+                PathWearEvents.getEdgeWear(level, pos),
+                PathWearEvents.getThreshold(level, pos)
+        );
     }
 }

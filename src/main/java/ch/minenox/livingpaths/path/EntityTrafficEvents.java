@@ -28,19 +28,23 @@ import java.util.UUID;
  * <p>The entity tick event supplies only the entity that already ticked. Tracking its last ground
  * position lets us count real block-to-block movement while keeping stationary mobs free of wear.
  * Vanilla animals are excluded by default so livestock enclosures keep their natural ground, but
- * can be enabled explicitly in the common configuration. MineColonies Citizens are detected by
- * their registered entity id, keeping MineColonies optional.
+ * can be enabled explicitly in the common configuration. MineColonies Citizens and the Player Two
+ * companion are detected by their registered entity ids, keeping both integrations optional.
  */
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class EntityTrafficEvents {
 
     private static final String MINECOLONIES_NAMESPACE = "minecolonies";
     private static final String MINECOLONIES_CITIZEN_PATH = "citizen";
+    private static final String PLAYER_TWO_NAMESPACE = "playertwo";
+    private static final String PLAYER_TWO_COMPANION_PATH = "nox";
     private static final Map<UUID, StepLocation> LAST_STEP = new HashMap<>();
     private static final Set<UUID> TRACKED_CITIZENS = new HashSet<>();
+    private static final Set<UUID> TRACKED_PLAYER_TWO_COMPANIONS = new HashSet<>();
     private static long countedCrossings;
     private static long appliedWear;
     private static long citizenCrossings;
+    private static long playerTwoCompanionCrossings;
 
     private EntityTrafficEvents() {
     }
@@ -54,12 +58,14 @@ public final class EntityTrafficEvents {
 
         UUID mobId = mob.getUUID();
         boolean mineColoniesCitizen = isMineColoniesCitizen(mob);
+        boolean playerTwoCompanion = isPlayerTwoCompanion(mob);
         if (!isSelectedTrafficMob(mob)
                 || !mob.isAlive()
                 || !mob.onGround()
                 || mob.isPassenger()) {
             LAST_STEP.remove(mobId);
             TRACKED_CITIZENS.remove(mobId);
+            TRACKED_PLAYER_TWO_COMPANIONS.remove(mobId);
             return;
         }
 
@@ -67,6 +73,11 @@ public final class EntityTrafficEvents {
             TRACKED_CITIZENS.add(mobId);
         } else {
             TRACKED_CITIZENS.remove(mobId);
+        }
+        if (playerTwoCompanion) {
+            TRACKED_PLAYER_TWO_COMPANIONS.add(mobId);
+        } else {
+            TRACKED_PLAYER_TWO_COMPANIONS.remove(mobId);
         }
 
         BlockPos groundPos = mob.getOnPos().immutable();
@@ -93,6 +104,9 @@ public final class EntityTrafficEvents {
         if (mineColoniesCitizen) {
             citizenCrossings++;
         }
+        if (playerTwoCompanion) {
+            playerTwoCompanionCrossings++;
+        }
     }
 
     @SubscribeEvent
@@ -100,19 +114,19 @@ public final class EntityTrafficEvents {
         UUID entityId = event.getEntity().getUUID();
         LAST_STEP.remove(entityId);
         TRACKED_CITIZENS.remove(entityId);
+        TRACKED_PLAYER_TWO_COMPANIONS.remove(entityId);
     }
 
-    public static String debugSummary() {
-        return LAST_STEP.size()
-                + " tracked | "
-                + countedCrossings
-                + " crossings | "
-                + appliedWear
-                + " wear | "
-                + TRACKED_CITIZENS.size()
-                + " citizens | "
-                + citizenCrossings
-                + " citizen crossings";
+    public static DebugSnapshot debugSnapshot() {
+        return new DebugSnapshot(
+                LAST_STEP.size(),
+                countedCrossings,
+                appliedWear,
+                TRACKED_CITIZENS.size(),
+                citizenCrossings,
+                TRACKED_PLAYER_TWO_COMPANIONS.size(),
+                playerTwoCompanionCrossings
+        );
     }
 
     private static boolean isSelectedTrafficMob(PathfinderMob mob) {
@@ -127,8 +141,11 @@ public final class EntityTrafficEvents {
             }
             return LivingPathsConfig.VANILLA_MOB_TRAFFIC_ENABLED.get();
         }
-        return LivingPathsConfig.MINECOLONIES_CITIZEN_TRAFFIC_ENABLED.get()
-                && isMineColoniesCitizen(entityId);
+        if (isMineColoniesCitizen(entityId)) {
+            return LivingPathsConfig.MINECOLONIES_CITIZEN_TRAFFIC_ENABLED.get();
+        }
+        return isPlayerTwoCompanion(entityId)
+                && LivingPathsConfig.PLAYER_TWO_COMPANION_TRAFFIC_ENABLED.get();
     }
 
     private static boolean isMineColoniesCitizen(PathfinderMob mob) {
@@ -140,6 +157,15 @@ public final class EntityTrafficEvents {
                 && MINECOLONIES_CITIZEN_PATH.equals(entityId.getPath());
     }
 
+    private static boolean isPlayerTwoCompanion(PathfinderMob mob) {
+        return isPlayerTwoCompanion(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
+    }
+
+    private static boolean isPlayerTwoCompanion(ResourceLocation entityId) {
+        return PLAYER_TWO_NAMESPACE.equals(entityId.getNamespace())
+                && PLAYER_TWO_COMPANION_PATH.equals(entityId.getPath());
+    }
+
     private static boolean isAdjacentStep(BlockPos previous, BlockPos current) {
         return Math.abs(current.getX() - previous.getX()) <= 1
                 && Math.abs(current.getY() - previous.getY()) <= 1
@@ -147,6 +173,9 @@ public final class EntityTrafficEvents {
     }
 
     private static int wearWeightFor(PathfinderMob mob) {
+        if (isPlayerTwoCompanion(mob)) {
+            return LivingPathsConfig.PLAYER_TWO_COMPANION_WEIGHT.get();
+        }
         if (isMineColoniesCitizen(mob)) {
             return LivingPathsConfig.MINECOLONIES_CITIZEN_WEIGHT.get();
         }
@@ -164,5 +193,16 @@ public final class EntityTrafficEvents {
     }
 
     private record StepLocation(ResourceKey<Level> dimension, BlockPos pos) {
+    }
+
+    public record DebugSnapshot(
+            int trackedEntities,
+            long countedCrossings,
+            long appliedWear,
+            int trackedCitizens,
+            long citizenCrossings,
+            int trackedPlayerTwoCompanions,
+            long playerTwoCompanionCrossings
+    ) {
     }
 }

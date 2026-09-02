@@ -2,8 +2,11 @@ package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.LivingPaths;
 import ch.minenox.livingpaths.config.LivingPathsClientConfig;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -40,14 +43,35 @@ public final class DebugHudOverlay {
 
         GuiGraphics graphics = event.getGuiGraphics();
         var font = minecraft.font;
+        var positionData = snapshot.position();
+        var trafficTotals = snapshot.entityTraffic().totals();
+        var integrationTraffic = snapshot.entityTraffic().integrations();
 
-        String title = "Living Paths Debug HUD";
-        String profile = "Profile: " + snapshot.profile();
-        String position = "Position: " + snapshot.position();
-        String entityTraffic = "Entity traffic: " + snapshot.entityTraffic();
-        String left = "Left:   " + snapshot.left();
-        String centre = "Centre: " + snapshot.centre();
-        String right = "Right:  " + snapshot.right();
+        Component title = Component.translatable("debug.livingpaths.hud.title");
+        Component profile = Component.translatable(
+                "debug.livingpaths.hud.profile",
+                Component.translatable("debug.livingpaths.hud.profile." + snapshot.profile())
+        );
+        Component position = Component.translatable(
+                "debug.livingpaths.hud.position",
+                positionData.x(),
+                positionData.y(),
+                positionData.z(),
+                Component.translatable("direction.minecraft." + positionData.direction())
+        );
+        Component entityTraffic = Component.translatable(
+                "debug.livingpaths.hud.entity_traffic",
+                trafficTotals.trackedEntities(),
+                trafficTotals.countedCrossings(),
+                trafficTotals.appliedWear(),
+                integrationTraffic.trackedCitizens(),
+                integrationTraffic.citizenCrossings(),
+                integrationTraffic.trackedPlayerTwoCompanions(),
+                integrationTraffic.playerTwoCompanionCrossings()
+        );
+        Component left = blockLine("debug.livingpaths.hud.left", snapshot.left());
+        Component centre = blockLine("debug.livingpaths.hud.centre", snapshot.centre());
+        Component right = blockLine("debug.livingpaths.hud.right", snapshot.right());
 
         int width = Math.max(
                 Math.max(
@@ -74,5 +98,21 @@ public final class DebugHudOverlay {
         graphics.drawString(font, left, textX, textY + LINE_HEIGHT * 4, TEXT, true);
         graphics.drawString(font, centre, textX, textY + LINE_HEIGHT * 5, TEXT, true);
         graphics.drawString(font, right, textX, textY + LINE_HEIGHT * 6, TEXT, true);
+    }
+
+    private static Component blockLine(String translationKey, DebugHudPayload.BlockSnapshot snapshot) {
+        var pos = snapshot.position();
+        ResourceLocation blockId = ResourceLocation.parse(snapshot.blockId());
+        Component blockName = Component.translatable(Util.makeDescriptionId("block", blockId));
+        return Component.translatable(
+                translationKey,
+                pos.x(),
+                pos.y(),
+                pos.z(),
+                blockName,
+                snapshot.wear(),
+                snapshot.threshold(),
+                snapshot.edgeWear()
+        );
     }
 }
