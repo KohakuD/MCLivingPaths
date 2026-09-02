@@ -69,4 +69,9 @@ English is the primary project and mod language. German (`de_de`) is maintained 
 
 ## License
 
-All Rights Reserved.
+Living Paths uses separate licenses for different parts of the project:
+
+- Source code, build scripts, configuration, and original documentation text are licensed under the [MIT License](LICENSE-CODE).
+- Original Living Paths textures, logos, icons, and other visual assets are licensed under [CC BY 4.0](LICENSE-ASSETS.md).
+
+See [LICENSE](LICENSE) for the complete scope and exclusions.
