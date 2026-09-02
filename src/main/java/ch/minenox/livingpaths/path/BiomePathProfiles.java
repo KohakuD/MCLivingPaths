@@ -3,7 +3,7 @@ package ch.minenox.livingpaths.path;
 import ch.minenox.livingpaths.LivingPaths;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -12,12 +12,12 @@ public final class BiomePathProfiles {
 
     private static final TagKey<Biome> FOREST_PATH_BIOMES = TagKey.create(
             Registries.BIOME,
-            ResourceLocation.fromNamespaceAndPath(LivingPaths.MOD_ID, "forest_path")
+            Identifier.fromNamespaceAndPath(LivingPaths.MOD_ID, "forest_path")
     );
 
     private static final TagKey<Biome> DAMP_PATH_BIOMES = TagKey.create(
             Registries.BIOME,
-            ResourceLocation.fromNamespaceAndPath(LivingPaths.MOD_ID, "damp_path")
+            Identifier.fromNamespaceAndPath(LivingPaths.MOD_ID, "damp_path")
     );
 
     private static final int FOREST_PODZOL_VARIATION_PERCENT = 35;

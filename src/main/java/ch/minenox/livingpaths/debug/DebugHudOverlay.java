@@ -2,11 +2,11 @@ package ch.minenox.livingpaths.debug;
 
 import ch.minenox.livingpaths.LivingPaths;
 import ch.minenox.livingpaths.config.LivingPathsClientConfig;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -41,7 +41,7 @@ public final class DebugHudOverlay {
             return;
         }
 
-        GuiGraphics graphics = event.getGuiGraphics();
+        GuiGraphicsExtractor graphics = event.getGuiGraphics();
         var font = minecraft.font;
         var positionData = snapshot.position();
         var trafficTotals = snapshot.entityTraffic().totals();
@@ -91,18 +91,18 @@ public final class DebugHudOverlay {
         int textX = x + PADDING;
         int textY = y + PADDING;
 
-        graphics.drawString(font, title, textX, textY, TITLE, true);
-        graphics.drawString(font, profile, textX, textY + LINE_HEIGHT, TEXT, true);
-        graphics.drawString(font, position, textX, textY + LINE_HEIGHT * 2, MUTED, true);
-        graphics.drawString(font, entityTraffic, textX, textY + LINE_HEIGHT * 3, MUTED, true);
-        graphics.drawString(font, left, textX, textY + LINE_HEIGHT * 4, TEXT, true);
-        graphics.drawString(font, centre, textX, textY + LINE_HEIGHT * 5, TEXT, true);
-        graphics.drawString(font, right, textX, textY + LINE_HEIGHT * 6, TEXT, true);
+        graphics.text(font, title, textX, textY, TITLE, true);
+        graphics.text(font, profile, textX, textY + LINE_HEIGHT, TEXT, true);
+        graphics.text(font, position, textX, textY + LINE_HEIGHT * 2, MUTED, true);
+        graphics.text(font, entityTraffic, textX, textY + LINE_HEIGHT * 3, MUTED, true);
+        graphics.text(font, left, textX, textY + LINE_HEIGHT * 4, TEXT, true);
+        graphics.text(font, centre, textX, textY + LINE_HEIGHT * 5, TEXT, true);
+        graphics.text(font, right, textX, textY + LINE_HEIGHT * 6, TEXT, true);
     }
 
     private static Component blockLine(String translationKey, DebugHudPayload.BlockSnapshot snapshot) {
         var pos = snapshot.position();
-        ResourceLocation blockId = ResourceLocation.parse(snapshot.blockId());
+        Identifier blockId = Identifier.parse(snapshot.blockId());
         Component blockName = Component.translatable(Util.makeDescriptionId("block", blockId));
         return Component.translatable(
                 translationKey,

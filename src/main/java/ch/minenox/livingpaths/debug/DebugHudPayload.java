@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record DebugHudPayload(
         String profile,
@@ -17,7 +17,7 @@ public record DebugHudPayload(
 ) implements CustomPacketPayload {
 
     public static final Type<DebugHudPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(LivingPaths.MOD_ID, "debug_hud")
+            Identifier.fromNamespaceAndPath(LivingPaths.MOD_ID, "debug_hud")
     );
 
     public static final StreamCodec<ByteBuf, DebugHudPayload> STREAM_CODEC = StreamCodec.composite(

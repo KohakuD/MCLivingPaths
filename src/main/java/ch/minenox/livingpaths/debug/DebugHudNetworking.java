@@ -5,7 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
-@EventBusSubscriber(modid = LivingPaths.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class DebugHudNetworking {
 
     private DebugHudNetworking() {

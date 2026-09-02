@@ -2,7 +2,7 @@ package ch.minenox.livingpaths.path;
 
 import ch.minenox.livingpaths.config.LivingPathsConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -14,9 +14,9 @@ public final class ProtectedBlocks {
     }
 
     public static boolean contains(Block block) {
-        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
         return LivingPathsConfig.PROTECTED_BLOCKS.get().stream()
-                .map(ResourceLocation::tryParse)
+                .map(Identifier::tryParse)
                 .anyMatch(blockId::equals);
     }
 }

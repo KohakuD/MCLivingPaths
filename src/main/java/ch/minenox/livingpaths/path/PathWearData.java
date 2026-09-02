@@ -1,20 +1,30 @@
 package ch.minenox.livingpaths.path;
 
+import ch.minenox.livingpaths.LivingPaths;
 import ch.minenox.livingpaths.config.LivingPathsConfig;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class PathWearData extends SavedData {
 
-    private static final String DATA_NAME = "livingpaths_wear";
+    private static final Codec<PathWearData> CODEC = CompoundTag.CODEC.xmap(
+            PathWearData::load,
+            PathWearData::save
+    );
+    private static final SavedDataType<PathWearData> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath(LivingPaths.MOD_ID, "wear"),
+            PathWearData::new,
+            CODEC
+    );
     private static final String WEAR_KEY = "wear";
     private static final String POSITION_KEY = "position";
     private static final String VISITS_KEY = "visits";
@@ -31,35 +41,26 @@ public final class PathWearData extends SavedData {
     private long lastCleanupGameTime = Long.MIN_VALUE;
 
     public static PathWearData get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(PathWearData::new, PathWearData::load),
-                DATA_NAME
-        );
+        return level.getDataStorage().computeIfAbsent(TYPE);
     }
 
-    private static PathWearData load(CompoundTag tag, HolderLookup.Provider registries) {
+    private static PathWearData load(CompoundTag tag) {
         PathWearData data = new PathWearData();
-        ListTag wearEntries = tag.getList(WEAR_KEY, Tag.TAG_COMPOUND);
+        ListTag wearEntries = tag.getListOrEmpty(WEAR_KEY);
 
         for (int index = 0; index < wearEntries.size(); index++) {
-            CompoundTag entry = wearEntries.getCompound(index);
-            long position = entry.getLong(POSITION_KEY);
-            int visits = entry.getInt(VISITS_KEY);
-            int edgeVisits = entry.contains(EDGE_VISITS_KEY, Tag.TAG_INT)
-                    ? entry.getInt(EDGE_VISITS_KEY)
-                    : 0;
-            long lastUsed = entry.contains(LAST_USED_KEY, Tag.TAG_LONG)
-                    ? entry.getLong(LAST_USED_KEY)
-                    : 0L;
-            boolean established = entry.contains(ESTABLISHED_KEY, Tag.TAG_BYTE)
-                    && entry.getBoolean(ESTABLISHED_KEY);
+            CompoundTag entry = wearEntries.getCompoundOrEmpty(index);
+            long position = entry.getLongOr(POSITION_KEY, 0L);
+            int visits = entry.getIntOr(VISITS_KEY, 0);
+            int edgeVisits = entry.getIntOr(EDGE_VISITS_KEY, 0);
+            long lastUsed = entry.getLongOr(LAST_USED_KEY, 0L);
+            boolean established = entry.getBooleanOr(ESTABLISHED_KEY, false);
             boolean stonePathOrigin;
-            if (entry.contains(STONE_PATH_ORIGIN_KEY, Tag.TAG_BYTE)) {
-                stonePathOrigin = entry.getBoolean(STONE_PATH_ORIGIN_KEY);
+            if (entry.contains(STONE_PATH_ORIGIN_KEY)) {
+                stonePathOrigin = entry.getBooleanOr(STONE_PATH_ORIGIN_KEY, false);
             } else {
                 boolean smoothStoneFromNaturalStone =
-                        entry.contains(LEGACY_SMOOTH_STONE_FROM_STONE_KEY, Tag.TAG_BYTE)
-                                && entry.getBoolean(LEGACY_SMOOTH_STONE_FROM_STONE_KEY);
+                        entry.getBooleanOr(LEGACY_SMOOTH_STONE_FROM_STONE_KEY, false);
                 stonePathOrigin = established && !smoothStoneFromNaturalStone;
             }
 
@@ -80,8 +81,8 @@ public final class PathWearData extends SavedData {
         return data;
     }
 
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+    private CompoundTag save() {
+        CompoundTag tag = new CompoundTag();
         ListTag wearEntries = new ListTag();
 
         for (Map.Entry<Long, WearEntry> wearEntry : wearByPosition.entrySet()) {

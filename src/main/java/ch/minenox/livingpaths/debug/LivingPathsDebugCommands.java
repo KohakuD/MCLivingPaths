@@ -39,7 +39,7 @@ public final class LivingPathsDebugCommands {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(
                 Commands.literal("livingpaths")
-                        .requires(source -> source.hasPermission(2))
+                        .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()))
                         .then(Commands.literal("debug")
                                 .then(Commands.literal("status")
                                         .executes(context -> showStatus(context.getSource().getPlayerOrException())))
@@ -75,7 +75,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int createShowcase(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         Direction forward = player.getDirection();
         Direction right = forward.getClockWise();
         BlockPos origin = player.getOnPos().relative(forward, 4);
@@ -130,7 +130,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int showStatus(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         var groundPos = player.getOnPos().immutable();
         int wear = PathWearEvents.getWear(level, groundPos);
         int edgeWear = PathWearEvents.getEdgeWear(level, groundPos);
@@ -144,7 +144,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int inspectPath(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         BlockPos centre = player.getOnPos().immutable();
         Direction forward = player.getDirection();
         Direction leftDirection = forward.getCounterClockWise();
@@ -173,7 +173,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int showProfile(ServerPlayer player) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         var groundPos = player.getOnPos().immutable();
         var profile = BiomePathProfiles.profileFor(level, groundPos);
 
@@ -185,7 +185,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int addWear(ServerPlayer player, int amount, boolean edgeWear) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         var groundPos = player.getOnPos().immutable();
 
         if (edgeWear) {
@@ -205,7 +205,7 @@ public final class LivingPathsDebugCommands {
     }
 
     private static int ageWear(ServerPlayer player, int days) {
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         var groundPos = player.getOnPos().immutable();
         PathWearData.get(level).ageWearForDebug(groundPos, days);
 
