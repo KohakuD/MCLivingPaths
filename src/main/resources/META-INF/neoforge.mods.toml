@@ -1,13 +1,13 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
-issueTrackerURL="https://github.com/ID7ZH/MCLivingPaths/issues"
+issueTrackerURL="https://github.com/KohakuD/MCLivingPaths/issues"
 
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-displayURL="https://github.com/ID7ZH/MCLivingPaths"
+displayURL="https://github.com/KohakuD/MCLivingPaths"
 authors="${mod_authors}"
 description='''
 ${mod_description}

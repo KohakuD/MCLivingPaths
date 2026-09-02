@@ -1,5 +1,7 @@
 # Living Paths – Roadmap
 
+Aktuelle Entwicklungsversion: `0.6.0`.
+
 ## 0.1.0 – Basic Path Wear
 
 - [x] Spielerbewegung serverseitig erkennen
@@ -69,7 +71,7 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 ### Aktuelles Verhalten organischer Wege
 
 - Der direkt betretene Block erhält vollen Verschleiss und bleibt die dominante Wegmitte.
-- Ungefähr ein Viertel der betretenen Positionen gibt zusätzlich einen Verschleisspunkt an eine benachbarte Wegschulter.
+- Zwei von fünf betretenen Positionen geben zusätzlich einen Verschleisspunkt an eine benachbarte Wegschulter.
 - Ob eine Position Randverschleiss erzeugt und welche Seite betroffen ist, wird aus der Blockposition abgeleitet. So entstehen stabile schmalere und breitere Abschnitte.
 - Beim Begehen derselben Strecke in Gegenrichtung wird dieselbe Wegschulter gewählt, statt die Seite zu spiegeln.
 - Grössere Positionssprünge und Teleports erzeugen keinen Randverschleiss.
@@ -86,6 +88,15 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Fahrzeuge/Passagiere nicht versehentlich doppelt zählen
 - [x] Performance mit vielen Entitäten in der Nähe prüfen
 
+### Aktuelles Verhalten des Entitätsverkehrs
+
+- Dorfbewohner, Fahrende Händler und andere bodengebundene Vanilla-Nichttier-Mobs tragen zum Wegverschleiss bei.
+- Tiere sind standardmässig ausgeschlossen, damit Gehege und Weideflächen nicht zu Wegen werden; sie können in der Konfiguration ausdrücklich aktiviert werden.
+- Normale Mobs erzeugen standardmässig einen Verschleisspunkt pro gültigem Bodenblock-Übertritt.
+- Eisengolems, Verwüster und Wärter erzeugen standardmässig zwei Verschleisspunkte pro gültigem Übertritt.
+- Stillstehende Entitäten, Passagiere, Fahrzeuge, Teleports und grosse Positionssprünge erzeugen keinen künstlichen Verschleiss.
+- Der Entitätsverkehr wurde mit dem Debug-HUD geprüft; die Anzahl erfasster Entitäten blieb stabil und der Verschleiss stoppte bei deaktivierter Mob-KI.
+
 ## 0.5.0 – MineColonies Integration
 
 - [x] MineColonies Citizens erkennen, wenn MineColonies installiert ist
@@ -94,6 +105,14 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Rollen-/Verkehrsgewichtung nur einführen, wenn sie natürlichere Wege erzeugt
 - [x] Typische Kolonie-Routen wie Builder, Warehouse, Residence, Mine und Farm testen
 
+### Aktuelles MineColonies-Verhalten
+
+- MineColonies Citizens werden über den registrierten Entitätstyp `minecolonies:citizen` erkannt, ohne MineColonies-Klassen zu importieren.
+- Die Integration bleibt optional; Living Paths startet auch ohne installierte MineColonies-Mod normal.
+- Citizens erzeugen standardmässig einen Verschleisspunkt pro gültigem Bodenblock-Übertritt und verwenden dieselben biomabhängigen Regeln für Wegmitte und Rand wie anderer Verkehr.
+- Berufe erhalten keine künstlichen Verschleissboni; häufig genutzte Arbeitswege werden durch den tatsächlichen Verkehr stärker.
+- Citizen-Verkehr wurde auf Koloniewegen im Spiel geprüft: Die Übertrittszahl stieg bei Bewegung und blieb im Stillstand unverändert.
+
 ## 0.6.0 – Configuration & Long-Term Behaviour
 
 - [x] Verschleiss-Schwellen konfigurierbar machen
@@ -101,10 +120,22 @@ Die serverseitige Implementierung ist so aufgebaut, dass mehrere Spieler unabhä
 - [x] Geschützte Blöcke konfigurierbar machen, Farmland aber standardmässig geschützt lassen
 - [x] Entitätsverkehr konfigurierbar machen
 - [x] Tierverkehr optional konfigurierbar machen und standardmässig deaktivieren
+- [x] Verkehr des Player-Two-Begleiters ohne harte Abhängigkeit optional und konfigurierbar machen
 - [x] Ingame-Konfigurationsbildschirm mit deutscher und englischer Lokalisierung bereitstellen
 - [x] Regeneration bzw. Überwachsen wenig genutzter etablierter Wege prüfen
 - [x] Seltene Weiterentwicklung extrem stark genutzter Cobblestone-Wege prüfen
 - [x] Sinnvolle Standardwerte bereitstellen, sodass für normale Nutzung keine Konfiguration nötig ist
+
+### Aktuelle Konfiguration und Langzeitentwicklung
+
+- Verschleissschwellen, Verschleissabbau, geschützte Blöcke, Schalter für Entitätsverkehr und Entitätsgewichte sind in der gemeinsamen Konfiguration verfügbar.
+- Nox wird als `playertwo:nox` erkannt und besitzt einen eigenen Verkehrsschalter und ein eigenes Verschleissgewicht; Player Two bleibt optional.
+- Der Ingame-Konfigurationsbildschirm und seine Beschriftungen stehen auf Deutsch und Englisch zur Verfügung.
+- Gespeicherter Verschleiss sinkt standardmässig nach jedem inaktiven Minecraft-Tag um einen Punkt.
+- Von Living Paths erzeugte etablierte Wege regenerieren standardmässig nach 30 inaktiven Minecraft-Tagen um eine Stufe.
+- Natürlich vorkommende und von Spielern platzierte Wegmaterialien werden nicht für die Regeneration registriert.
+- Von Living Paths erzeugter Cobblestone entwickelt sich nach weiteren 1.000 Übertritten zu Stone; Stone wird nach weiteren 1.000 Übertritten zu Smooth Stone.
+- Natürlich vorkommender oder von Spielern platzierter Cobblestone wird durch das Verschleisssystem nicht umgewandelt.
 
 ## Richtung 1.0.0
 

@@ -6,22 +6,29 @@ The goal is to make movement leave visible, persistent traces in the world witho
 
 ## Current status
 
-Living Paths is currently in early development (`0.1.0`).
+Living Paths is currently in early development. The latest version is `0.6.0`.
 
-The first version focuses on player-created wear:
+The current version supports:
 
-- track actual movement across ground blocks
-- evolve frequently travelled grass into progressively stronger path materials
-- support Podzol and Mycelium with greater wear resistance
-- never modify Farmland
-- store wear data persistently
-- process path wear server-side and remain multiplayer-friendly
+- player-created wear from actual ground-block crossings
+- biome-aware forest, damp and open-landscape path profiles
+- organic path shoulders with stable, position-based variation
+- selected vanilla mob traffic and optional animal traffic
+- optional MineColonies Citizen traffic without a hard dependency
+- configurable Player Two companion traffic without a hard dependency
+- configurable thresholds, wear decay, protected blocks and entity weights
+- slow regeneration of inactive paths created by Living Paths
+- rare development of established Cobblestone into Stone and Smooth Stone
+- persistent, multiplayer-friendly server-side processing
+- an in-game configuration screen with English and German localisation
 
-Initial wear chain:
+The standard open-landscape wear chain is:
 
-`Grass Block -> Dirt Path -> Coarse Dirt -> Gravel -> Cobblestone`
+`Grass Block -> Dirt Path -> Coarse Dirt -> Gravel -> Cobblestone -> Stone -> Smooth Stone`
 
-Future versions are planned to add biome-aware path variants, moss and rooted dirt, more organic path edges, vanilla entities and MineColonies citizens.
+Biome profiles can introduce Podzol, Rooted Dirt, Moss, Mud, Packed Mud and Mossy Cobblestone. Farmland is protected by default, and server administrators can configure the protected-block list.
+
+The remaining work towards `1.0.0` focuses on long-term survival testing, real multiplayer validation, modpack compatibility, final performance and save-size review, localisation review and publication-ready packaging.
 
 ## Documentation
 

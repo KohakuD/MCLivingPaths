@@ -2,72 +2,98 @@
 
 ## Grundidee
 
-Living Paths verändert die Landschaft abhängig davon, wie häufig bestimmte Blöcke von Spielern und später auch anderen Entitäten betreten werden.
+Living Paths verändert die Landschaft abhängig davon, wie häufig Bodenblöcke von Spielern und ausgewählten Entitäten überquert werden.
 
-Wege sollen organisch entstehen und nicht überall identisch aussehen.
+Wege entstehen aus tatsächlichem Verkehr, entwickeln sich organisch und variieren abhängig von Biom und Position, statt gleichförmige automatische Strassen zu bilden.
 
 ## Grundregeln
 
 ### Standard-Abnutzung
+
+Die Standardentwicklung in offenen Landschaften lautet:
 
 Grass Block
 → Dirt Path
 → Coarse Dirt
 → Gravel
 → Cobblestone
+→ Stone
+→ Smooth Stone
 
 Normale Dirt-Blöcke werden bewusst nicht als Abnutzungsstufe verwendet, da sie durch benachbarte Grass- oder Mycelium-Blöcke wieder überwachsen können.
 
+Stone und Smooth Stone sind seltene späte Stufen. Nur von Living Paths erzeugter, etablierter Cobblestone kann sich zu Stone entwickeln; natürlich vorkommender und von Spielern platzierter Cobblestone wird nicht umgewandelt.
+
 ### Geschützte Blöcke
 
-Farmland wird niemals durch Living Paths verändert.
+Konfigurierte geschützte Blöcke werden weder abgenutzt noch ersetzt. Farmland ist standardmässig in der Schutzliste enthalten. Serveradministratoren können diese Liste mit Block-IDs einschliesslich Namensraum erweitern oder ändern.
 
 ### Podzol und Mycelium
 
-Podzol und Mycelium können ebenfalls verschleissen, sind jedoch deutlich widerstandsfähiger als Grass Blocks.
-
-Für die erste Version sollen beide ungefähr den dreifachen Nutzungsaufwand gegenüber Grass Blocks benötigen. Dieser Wert ist ausdrücklich ein Testwert und kann nach Spieltests angepasst werden.
+Podzol und Mycelium können verschleissen, verwenden aber standardmässig eine Schwelle von 75 Übertritten und benötigen damit dreimal so viel Verkehr wie Grass Block. Beim Erreichen der Schwelle entwickeln sich beide zu Dirt Path.
 
 ### Biomabhängige Entwicklung
 
-Spätere Versionen sollen unterschiedliche Wegcharaktere abhängig vom Biom erzeugen.
+Living Paths wählt für jede Position ein datengetriebenes Wegprofil:
 
-Beispiele:
+- Waldgebiete können Podzol und Rooted Dirt einführen.
+- Feuchte oder stark bewachsene Gebiete können Mud, Packed Mud, Moss, Rooted Dirt und Mossy Cobblestone einführen.
+- Offene Landschaften bleiben nahe an der Standardentwicklung über Dirt Path, Coarse Dirt und Gravel.
 
-- Waldgebiete: Podzol und Rooted Dirt
-- feuchte oder stark bewachsene Gebiete: Moss und Mossy Cobblestone
-- offene Landschaft: Dirt Path, Coarse Dirt und Gravel
-
-Biomabhängige Entwicklung soll nicht bedeuten, dass jeder Block dieselbe feste Kette durchläuft. Ziel ist eine natürliche Mischung aus stärker und schwächer beanspruchten Flächen.
-
-### Höchste Verschleissstufe
-
-Cobblestone ist zunächst die höchste reguläre Abnutzungsstufe.
-
-Stone wird nicht automatisch als nächste Stufe verwendet. Eine spätere seltene Weiterentwicklung extrem stark genutzter Wege kann separat geprüft werden.
+Eine stabile, aus der Blockposition abgeleitete Variation verhindert, dass jeder Block eines Bioms exakt dieselbe Abfolge durchläuft. Dadurch entsteht eine Mischung unterschiedlich stark abgenutzter Materialien, die auch nach einem Weltneustart stabil bleibt.
 
 ### Natürliches Erscheinungsbild
 
-Langfristig sollen Wege nicht aus einer gleichmässigen Blockreihe bestehen. Die tatsächliche Nutzung soll Wegmitte, Randbereiche und unterschiedliche Verschleissgrade erzeugen.
+Der direkt betretene Block erhält den vollständigen Verschleiss der Wegmitte. Zwei von fünf betretenen Positionen geben zusätzlich Verschleiss an eine benachbarte Wegschulter.
 
-Moos soll eher in wenig betretenen Randbereichen vorkommen als in der stark genutzten Wegmitte.
+Die Wegschulter wird aus Blockposition und Bewegungsrichtung so bestimmt, dass sie nach Weltneustarts stabil bleibt und beim Begehen der Strecke in Gegenrichtung dieselbe Seite gewählt wird. Geeignete Oberflächen auf gleicher Höhe sowie einen Block höher oder tiefer können Randverschleiss erhalten.
+
+Randdominierter Verschleiss bevorzugt in feuchten Biomen Moss und Mossy Cobblestone. Teleports und grössere Positionssprünge erzeugen keinen Randverschleiss.
+
+### Entitätsverkehr
+
+Ausgewählte bodengebundene Vanilla-Nichttier-Mobs tragen standardmässig zum Verschleiss bei. Tiere sind zum Schutz von Gehegen und Weideflächen standardmässig deaktiviert, können aber in der Konfiguration aktiviert werden.
+
+Normale Mobs erzeugen standardmässig einen Verschleisspunkt pro gültigem Übertritt. Eisengolems, Verwüster und Wärter erzeugen zwei. Stillstehende Entitäten, Passagiere, Fahrzeuge, Teleports und grosse Positionssprünge erzeugen keinen künstlichen Verkehr.
+
+MineColonies Citizens werden über ihren registrierten Entitätstyp `minecolonies:citizen` erkannt. Dadurch bleibt MineColonies optional und es entsteht keine feste Code-Abhängigkeit. Citizens verwenden dieselben biomabhängigen Regeln für Wegmitte und Rand wie anderer Verkehr.
+
+Der Player-Two-Begleiter Nox wird über den registrierten Entitätstyp `playertwo:nox` erkannt. Player Two bleibt optional; der Nox-Verkehr besitzt einen eigenen Schalter und ein konfigurierbares Verschleissgewicht.
+
+### Verschleissabbau und Regeneration
+
+Gespeicherter Verschleiss an einer inaktiven Position sinkt standardmässig um einen Punkt pro Minecraft-Tag. Dadurch wachsen unvollständige Verschleissdaten nicht unbegrenzt.
+
+Von Living Paths erzeugte etablierte Wege regenerieren standardmässig nach 30 inaktiven Minecraft-Tagen langsam um jeweils eine Stufe. Natürlich vorkommende und von Spielern platzierte Wegmaterialien werden nicht für die Regeneration registriert.
+
+Die Regeneration führt etablierte Wege über passende frühere Stufen zurück, zum Beispiel Smooth Stone → Stone → Cobblestone → Gravel → Coarse Dirt → Dirt Path → Grass Block. Feuchte Varianten verwenden passende Rückstufen wie Mossy Cobblestone → Moss Block → Grass Block.
 
 ## Technische Grundprinzipien
 
-- Die Verarbeitung erfolgt serverseitig.
-- Ein Spieler erzeugt nicht bei jedem Game-Tick Nutzung, sondern nur beim tatsächlichen Wechsel auf einen neuen Bodenblock.
-- Die Nutzung wird pro Blockposition gezählt.
-- Verschleissdaten sollen persistent gespeichert werden.
-- Farmland wird über eine geschützte Blockregel vollständig ausgeschlossen.
-- Die Architektur soll spätere Unterstützung für Vanilla-Mobs und MineColonies Citizens ermöglichen.
+- Die gesamte Verschleissverarbeitung und alle persistenten Zustandsänderungen erfolgen serverseitig.
+- Spielerverschleiss wird nur beim Wechsel auf einen neuen Bodenblock gezählt; ausgewählte Entitäten tragen nur bei gültigen benachbarten Übertritten bei.
+- Nutzung, Randverschleiss, letzte Aktivität und der Zustand etablierter Wege werden pro Blockposition erfasst.
+- Verschleissdaten werden persistent gespeichert und bleiben nach Weltneustarts stabil.
+- Die Spieler- und Entitätserfassung benötigt keinen globalen Scan aller Entitäten.
+- Schutzregeln und Biomprofile gelten gleichermassen für Wegmitte und Randverschleiss.
+- Die Unterstützung für MineColonies und Player Two bleibt optional und importiert keine Klassen aus den beiden Mods.
+- Schwellenwerte, Verschleissabbau, Regeneration, geschützte Blöcke, Verkehrsschalter und Entitätsgewichte sind konfigurierbar.
 
-## Erste Testschwellen für 0.1.0
+## Standardschwellen für 0.6.0
 
-Die folgenden Werte dienen nur als Ausgangspunkt für Spieltests:
+Jede Schwelle bezeichnet den zusätzlichen Verkehr, der innerhalb der jeweiligen Blockstufe nötig ist:
 
-- Grass Block: 25 Übertritte → Dirt Path
-- Dirt Path: weitere 50 Übertritte → Coarse Dirt
-- Coarse Dirt: weitere 100 Übertritte → Gravel
-- Gravel: weitere 200 Übertritte → Cobblestone
+- Grass Block: 25 Übertritte → Dirt Path oder biomabhängige Alternative
+- Mud: 50 Übertritte → Packed Mud
+- Packed Mud: 75 Übertritte → biomabhängiges verdichtetes Wegmaterial
+- Podzol: 75 Übertritte → Dirt Path
+- Mycelium: 75 Übertritte → Dirt Path
+- Dirt Path: 50 Übertritte → biomabhängiges etabliertes Wegmaterial
+- Moss Block: 75 Übertritte → Rooted Dirt
+- Rooted Dirt: 75 Übertritte → Coarse Dirt
+- Coarse Dirt: 100 Übertritte → Gravel
+- Gravel: 200 Übertritte → Cobblestone oder Mossy Cobblestone
+- Von Living Paths erzeugter etablierter Cobblestone: 1.000 Übertritte → Stone
+- Stone aus einem Living-Paths-Weg: 1.000 Übertritte → Smooth Stone
 
-Podzol und Mycelium sollen in 0.1.0 ungefähr Faktor 3 gegenüber Grass Blocks verwenden.
+Diese Werte sind konfigurierbare Standards, die ohne verpflichtende Einrichtung funktionieren sollen. Spieltests und Langzeitprüfungen in Survival-Welten können vor `1.0.0` noch zu Balanceänderungen führen.

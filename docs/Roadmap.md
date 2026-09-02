@@ -1,5 +1,7 @@
 # Living Paths – Roadmap
 
+Current development version: `0.6.0`.
+
 ## 0.1.0 – Basic Path Wear
 
 - [x] Detect player movement server-side
@@ -69,7 +71,7 @@ The server-side implementation is designed so multiple players can contribute to
 ### Current organic-path behaviour
 
 - The directly travelled block receives full wear and remains the dominant track centre.
-- Roughly one quarter of travelled positions contribute one additional wear point to a neighbouring shoulder.
+- Two out of five travelled positions contribute one additional wear point to a neighbouring shoulder.
 - Whether a position creates shoulder wear and which side receives it are derived from the block position, producing stable narrow and wide sections.
 - Walking the same route in the opposite direction selects the same shoulder rather than mirroring it.
 - Large position jumps and teleports do not create edge wear.
@@ -118,10 +120,22 @@ The server-side implementation is designed so multiple players can contribute to
 - [x] Make protected blocks configurable while keeping Farmland protected by default
 - [x] Make entity traffic configurable
 - [x] Make animal traffic optional and disabled by default
+- [x] Make Player Two companion traffic optional and configurable without a hard dependency
 - [x] Provide an in-game configuration screen with English and German localisation
 - [x] Evaluate regeneration or overgrowth of rarely used established paths
 - [x] Evaluate rare further development of extremely heavily used Cobblestone paths
 - [x] Provide sensible defaults so no configuration is required for normal use
+
+### Current configuration and long-term behaviour
+
+- Wear thresholds, wear decay, protected blocks, entity-traffic switches and entity weights are available in the common configuration.
+- Nox is detected as `playertwo:nox` and has a dedicated traffic switch and wear weight; Player Two remains optional.
+- The in-game configuration screen and its labels are available in English and German.
+- Stored wear decays by one point after each inactive Minecraft day by default.
+- Established paths created by Living Paths regenerate by one stage after 30 inactive Minecraft days by default.
+- Naturally occurring and player-placed path materials are not registered for regeneration.
+- Established Cobblestone created by Living Paths progresses to Stone after 1,000 additional crossings; Stone progresses to Smooth Stone after another 1,000 crossings.
+- Naturally occurring or player-placed Cobblestone is not converted by the wear system.
 
 ## Towards 1.0.0
 
