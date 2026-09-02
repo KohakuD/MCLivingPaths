@@ -32,7 +32,7 @@ public final class DebugHudOverlay {
         }
 
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || minecraft.options.hideGui) {
+        if (minecraft.player == null || minecraft.gui.hud.isHidden()) {
             return;
         }
 

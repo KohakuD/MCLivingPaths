@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
@@ -184,9 +185,9 @@ public final class EntityTrafficEvents {
         }
 
         EntityType<?> type = mob.getType();
-        if (type == EntityType.IRON_GOLEM
-                || type == EntityType.RAVAGER
-                || type == EntityType.WARDEN) {
+        if (type == EntityTypes.IRON_GOLEM
+                || type == EntityTypes.RAVAGER
+                || type == EntityTypes.WARDEN) {
             return LivingPathsConfig.HEAVY_ENTITY_WEIGHT.get();
         }
         return LivingPathsConfig.NORMAL_ENTITY_WEIGHT.get();

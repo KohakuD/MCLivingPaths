@@ -1,6 +1,6 @@
 # Living Paths
 
-Living Paths is a NeoForge mod for Minecraft 26.1.2 that lets frequently travelled terrain evolve into natural-looking paths over time.
+Living Paths is a NeoForge mod for Minecraft 26.2 that lets frequently travelled terrain evolve into natural-looking paths over time.
 
 The goal is to make movement leave visible, persistent traces in the world without turning the mod into an automatic road builder.
 
@@ -39,8 +39,8 @@ The remaining work towards `1.0.0` focuses on long-term survival testing, real m
 
 ## Development
 
-- Minecraft: `26.1.2`
-- NeoForge: `26.1.2.x`
+- Minecraft: `26.2`
+- NeoForge: `26.2.0.x`
 - Java: `25`
 
 Build the project with:
