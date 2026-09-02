@@ -55,6 +55,14 @@ Run the development client with:
 .\gradlew.bat runClient
 ```
 
+Operators can create a compact screenshot scene in a test world with:
+
+```text
+/livingpaths debug showcase
+```
+
+The command builds the complete standard progression four blocks in front of the player. It replaces a 28-by-7-block strip of terrain and clears two blocks of headroom, so it should only be used in a disposable or backed-up area.
+
 ## Languages
 
 English is the primary project and mod language. German (`de_de`) is maintained alongside English from the beginning.

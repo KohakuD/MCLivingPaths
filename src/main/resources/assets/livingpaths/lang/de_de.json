@@ -4,6 +4,7 @@
   "command.livingpaths.debug.addedgewear": "%s Rand-Abnutzung zum Block bei %s %s %s hinzugefügt. Aktuell: %s (%s Rand, Schwelle: %s).",
   "command.livingpaths.debug.agewear": "Abnutzung um %s Minecraft-Tag(e) bei %s %s %s gealtert. Aktuell: %s (%s Rand, Schwelle: %s).",
   "command.livingpaths.debug.profile": "Living-Paths-Debug: Block bei %s %s %s verwendet das Profil %s.",
+  "command.livingpaths.debug.showcase": "Living-Paths-Präsentation mit %s Blöcken ab %s %s %s erstellt. Das Gelände im Präsentationsbereich wurde ersetzt.",
   "command.livingpaths.debug.inspect.header": "Living Paths prüfen (Blickrichtung %s):",
   "command.livingpaths.debug.inspect.left": "Links  %s %s %s: Abnutzung %s (%s Rand) / %s",
   "command.livingpaths.debug.inspect.centre": "Mitte  %s %s %s: Abnutzung %s (%s Rand) / %s",

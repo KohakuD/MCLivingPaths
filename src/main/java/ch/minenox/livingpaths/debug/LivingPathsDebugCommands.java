@@ -11,12 +11,26 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class LivingPathsDebugCommands {
+
+    private static final Block[] SHOWCASE_STAGES = {
+            Blocks.GRASS_BLOCK,
+            Blocks.DIRT_PATH,
+            Blocks.COARSE_DIRT,
+            Blocks.GRAVEL,
+            Blocks.COBBLESTONE,
+            Blocks.STONE,
+            Blocks.SMOOTH_STONE
+    };
+    private static final int SHOWCASE_STAGE_LENGTH = 4;
+    private static final int SHOWCASE_HALF_WIDTH = 3;
 
     private LivingPathsDebugCommands() {
     }
@@ -52,8 +66,67 @@ public final class LivingPathsDebugCommands {
                                                 .executes(context -> ageWear(
                                                         context.getSource().getPlayerOrException(),
                                                         IntegerArgumentType.getInteger(context, "days")
-                                                )))))
+                                                ))))
+                                .then(Commands.literal("showcase")
+                                        .executes(context -> createShowcase(
+                                                context.getSource().getPlayerOrException()
+                                        ))))
         );
+    }
+
+    private static int createShowcase(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        Direction forward = player.getDirection();
+        Direction right = forward.getClockWise();
+        BlockPos origin = player.getOnPos().relative(forward, 4);
+        PathWearData data = PathWearData.get(level);
+        long gameTime = level.getGameTime();
+        int length = SHOWCASE_STAGES.length * SHOWCASE_STAGE_LENGTH;
+        int changedBlocks = 0;
+
+        for (int distance = 0; distance < length; distance++) {
+            int stageIndex = distance / SHOWCASE_STAGE_LENGTH;
+
+            for (int sideways = -SHOWCASE_HALF_WIDTH; sideways <= SHOWCASE_HALF_WIDTH; sideways++) {
+                BlockPos pos = origin.relative(forward, distance).relative(right, sideways);
+                Block block = showcaseBlock(stageIndex, distance, sideways);
+
+                data.clearWear(pos);
+                if (level.setBlockAndUpdate(pos, block.defaultBlockState())) {
+                    changedBlocks++;
+                }
+                level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+                level.setBlockAndUpdate(pos.above(2), Blocks.AIR.defaultBlockState());
+
+                if (block != Blocks.GRASS_BLOCK) {
+                    boolean stonePathOrigin = block == Blocks.STONE || block == Blocks.SMOOTH_STONE;
+                    data.markEstablished(pos, gameTime, stonePathOrigin);
+                }
+            }
+        }
+
+        player.sendSystemMessage(Component.translatable(
+                "command.livingpaths.debug.showcase",
+                changedBlocks,
+                origin.getX(), origin.getY(), origin.getZ()
+        ));
+        return changedBlocks;
+    }
+
+    private static Block showcaseBlock(int stageIndex, int distance, int sideways) {
+        int absoluteSideways = Math.abs(sideways);
+        if (absoluteSideways <= 1) {
+            return SHOWCASE_STAGES[stageIndex];
+        }
+        if (absoluteSideways == SHOWCASE_HALF_WIDTH) {
+            return Blocks.GRASS_BLOCK;
+        }
+
+        int variation = Math.floorMod(distance * 31 + sideways * 17, 5);
+        if (variation < 2) {
+            return SHOWCASE_STAGES[stageIndex];
+        }
+        return SHOWCASE_STAGES[Math.max(0, stageIndex - 1)];
     }
 
     private static int showStatus(ServerPlayer player) {
