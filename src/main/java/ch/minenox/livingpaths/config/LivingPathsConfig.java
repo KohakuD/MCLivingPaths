@@ -1,6 +1,6 @@
 package ch.minenox.livingpaths.config;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
@@ -125,7 +125,7 @@ public final class LivingPathsConfig {
                 "blocks",
                 List.of("minecraft:farmland"),
                 () -> "minecraft:farmland",
-                value -> value instanceof String id && ResourceLocation.tryParse(id) != null
+                value -> value instanceof String id && Identifier.tryParse(id) != null
         );
 
         builder.pop();

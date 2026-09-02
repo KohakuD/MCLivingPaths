@@ -7,6 +7,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 @EventBusSubscriber(modid = LivingPaths.MOD_ID)
 public final class PlayerPathModificationEvents {
@@ -15,7 +16,7 @@ public final class PlayerPathModificationEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onBlockBroken(BlockEvent.BreakEvent event) {
+    public static void onBlockBroken(BreakBlockEvent event) {
         if (event.getLevel() instanceof ServerLevel level) {
             PathWearData.get(level).clearWear(event.getPos());
         }

@@ -5,7 +5,7 @@ import ch.minenox.livingpaths.config.LivingPathsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -134,7 +134,7 @@ public final class EntityTrafficEvents {
             return false;
         }
 
-        ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
+        Identifier entityId = BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType());
         if ("minecraft".equals(entityId.getNamespace())) {
             if (mob instanceof Animal) {
                 return LivingPathsConfig.ANIMAL_TRAFFIC_ENABLED.get();
@@ -152,7 +152,7 @@ public final class EntityTrafficEvents {
         return isMineColoniesCitizen(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
     }
 
-    private static boolean isMineColoniesCitizen(ResourceLocation entityId) {
+    private static boolean isMineColoniesCitizen(Identifier entityId) {
         return MINECOLONIES_NAMESPACE.equals(entityId.getNamespace())
                 && MINECOLONIES_CITIZEN_PATH.equals(entityId.getPath());
     }
@@ -161,7 +161,7 @@ public final class EntityTrafficEvents {
         return isPlayerTwoCompanion(BuiltInRegistries.ENTITY_TYPE.getKey(mob.getType()));
     }
 
-    private static boolean isPlayerTwoCompanion(ResourceLocation entityId) {
+    private static boolean isPlayerTwoCompanion(Identifier entityId) {
         return PLAYER_TWO_NAMESPACE.equals(entityId.getNamespace())
                 && PLAYER_TWO_COMPANION_PATH.equals(entityId.getPath());
     }
